@@ -18,9 +18,9 @@ maptrack(dsm, minimumpoints, tracks, side1_extent = NULL, side2_extent = NULL)
 
 \item{tracks}{Digital Surface Model raster file as '.tif'.}
 
-\item{side1_extent}{Output file of the function 'outer_points'. Left.}
+\item{side1_extent}{Output file of the function 'outer_point'. Left.}
 
-\item{side2_extent}{Output file of the function 'outer_points'. Right.}
+\item{side2_extent}{Output file of the function 'outer_point'. Right.}
 }
 \value{
 A plot, each time changing when running the function.

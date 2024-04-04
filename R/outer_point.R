@@ -1,8 +1,17 @@
 
-#' Generates the outer limit of the path as points on the crossprofiles.
+#' Generates the outer limit of a side of the path as points on the crossprofiles.
+#'
+#' Returns the outer limit of the path of ONE side. You can choose the side you want.
+#' Can export two GeoPackages. Each is the outer limit of the path of each side of the path.
+#'
+#' TIP: Run this function twice to get both sides into the environment as 'side1_extent' and 'side2_extent' for a better workflow.
+#' Be sure to activate the according parameter.
+#'
 #'
 #' @param dsm Digital Surface Model raster file as '.tif'.
 #' @param tracks GeoPackage file of lines
+#' @param side1 If 'TRUE' side 1 will be returned. If 'FALSE' side 2 will be returned.
+#' @param export If 'TRUE' both sides will be exported as GeoPackage.
 #' @param dist_cross Distance between each crossprofile in meter. Defaults to '1'.
 #' @param profile_length Length of the crossprofile in meter. Defaults to '1'.
 #' @param dist_cross_points Distance of the points on the crossprofile in meter. Defaults to '0.05'.
@@ -11,11 +20,12 @@
 #' @export
 #'
 #' @examples
-outer_points <- function(dsm, tracks, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05) {
+outer_point <- function(dsm, tracks, side1 = TRUE, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05) {
 
   checkFunction <- function() {
     user_input <- readline("Are you sure your Tracks-Layer provides the needed conditions for this function? (y/n)")
-    if(user_input != "y") stop("Exiting since you did not press y. You can adjust you column names and try again")
+    if(user_input != "y") stop("Exiting since you did not press y.
+                               Please import your tracks layer with the import function 'read_tracks() to check the conditions.")
 
   }
 
@@ -23,8 +33,12 @@ outer_points <- function(dsm, tracks, dist_cross = 1, profile_length = 1, dist_c
 
   #first lets make the dsm a bit smaller
 
+tracks <- st_transform(tracks, crs=st_crs(dsm))
 
   bufferedtrack <- sf::st_buffer(tracks, profile_length, endCapStyle = "ROUND", joinStyle = "ROUND")
+
+
+
 
   # Clip dsm by buffer
   dsm_clipped <- mask(dsm, bufferedtrack)
@@ -114,14 +128,27 @@ outer_points <- function(dsm, tracks, dist_cross = 1, profile_length = 1, dist_c
   centerpoints <- centerpoints %>%
     dplyr::select(!ends_with("y"))
 
-  centerpoints <-  centerpoints %>%
-    dplyr::rename(
-      class_id = class_id.x,
-      line_id = line_id.x,
-      fade_scr = fade_scr.x,
-      distance = distance.x,
-      angle = angle.x
-    )
+  if ("fade_scr.x" %in% colnames(centerpoints)) {
+
+    centerpoints <-  centerpoints %>%
+      dplyr::rename(
+        class_id = class_id.x,
+        line_id = line_id.x,
+        fade_scr = fade_scr.x,
+        distance = distance.x,
+        angle = angle.x
+      )
+  }
+  else {
+    centerpoints <-  centerpoints %>%
+      dplyr::rename(
+        class_id = class_id.x,
+        line_id = line_id.x,
+        distance = distance.x,
+        angle = angle.x
+      )
+
+  }
 
   #here i have to split the upper and down parts
   sidebuff_distance <- profile_length/2
@@ -191,22 +218,37 @@ outer_points <- function(dsm, tracks, dist_cross = 1, profile_length = 1, dist_c
 
 
 
-
-
-
-  st_write(slope_up_stats, "upperslope.gpkg", append=F)
-  st_write(slope_down_stats, "downerslope.gpkg", append=F)
-
-
   #select objects where slope value is the same as max value (so we only have the max slope object of the profiles)
   selected_up <- slope_up_stats[slope_up_stats$slope == slope_up_stats$max,]
   selected_down <- slope_down_stats[slope_down_stats$slope == slope_down_stats$max,]
 
-  selected_up <- selected_up[,c("class_id","fade_scr","line_id","slope","max")]
-  selected_down <- selected_down[,c("class_id","fade_scr","line_id","slope","max")]
+  if ("fade_scr" %in% colnames(selected_up) | "fade_scr" %in% colnames(selected_down)) {
+
+    selected_up <- selected_up[,c("class_id","fade_scr","line_id","slope","max")]
+    selected_down <- selected_down[,c("class_id","fade_scr","line_id","slope","max")]
+
+  }
+  else{
+    selected_up <- selected_up[,c("class_id","line_id","slope","max")]
+    selected_down <- selected_down[,c("class_id","line_id","slope","max")]
+
+  }
+
+if(isTRUE(side1)) {
+  return(selected_up)
+}
+  else {
+    return(selected_down)
+  }
+
+
+if(isTRUE(export)) {
 
   st_write(selected_up, "side1_extent.gpkg", driver = "GPKG")
   st_write(selected_down, "side2_extent.gpkg", driver = "GPKG")
+
+}
+
 
 
 }
