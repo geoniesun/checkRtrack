@@ -18,7 +18,7 @@ checkMap(dsm, tracks, points, morepoints = NULL, export = FALSE)
 \item{export}{If 'TRUE', the plot as png will be exported to your wd.}
 }
 \description{
-An overview op of the entire tracks and points would be too messy
-so each time running this function, a random spot on your tracks will be mapped to see how it worked out.
+An overview op of the entire tracks and points would be too messy,
+so each time running this function, a random spot on your tracks will be mapped to see how it worked out (so zooming in).
 The idea is to adjust the parameters used in the functions that created the points.
 }

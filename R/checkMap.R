@@ -1,7 +1,7 @@
 #' Creates an overview map of a random scene of the data to check the results.
 #'
-#' An overview op of the entire tracks and points would be too messy
-#' so each time running this function, a random spot on your tracks will be mapped to see how it worked out.
+#' An overview op of the entire tracks and points would be too messy,
+#' so each time running this function, a random spot on your tracks will be mapped to see how it worked out (so zooming in).
 #' The idea is to adjust the parameters used in the functions that created the points.
 #'
 #' @param dsm Digital Surface Model raster file as '.tif'.
@@ -85,28 +85,28 @@ checkMap <- function(dsm, tracks, points, morepoints=NULL, export = FALSE) {
     #scale_fill_viridis_c(option = "plasma") +
     scale_fill_continuous_sequential(palette="lajolla", na.value = NA) +
     #scale_fill_gradient(low = "yellow", high = "brown", na.value = NA)+
-    guides(fill = guide_colorsteps(barwidth = 21,
-                                   barheight = .5,
-                                   title.position = "right",
+    guides(fill = guide_colorsteps(barwidth = 1,
+                                   barheight = 15,
+                                   title.position = "top",
                                    show.limits =F,
                                    even.steps = T,
                                    reverse = F)) +
-    labs(fill = "m", title = "Overview of what is going on") +
-    # coord_sf() +
+    labs(fill = "m", title = "This is going on in your process..") +
     theme(legend.position = "right") +
     geom_sf(data=lines_subset, show.legend = FALSE) +
     #geom_sf(data=points_subset, aes(colour = Pointtype)) +
     theme(
-      axis.title.x = element_blank(),
+     axis.title.x = element_blank(),
       axis.text.x = element_blank(),
       axis.ticks.x = element_blank(),
       axis.title.y = element_blank(),
       axis.text.y = element_blank(),
-      axis.ticks.y = element_blank()) +
-    annotation_scale(location="bl", width_hint = 0.5) +
+      axis.ticks.y = element_blank(),
+     panel.background = element_rect(fill = "aliceblue")) +
+    annotation_scale(location="bl", width_hint = 0.5, pad_x = unit(0.5, "in"), pad_y = unit(0.5, "in")) +
     annotation_north_arrow(location = "bl",
                            which_north = "true",
-                           pad_x = unit(0.75, "in"), pad_y = unit(0.5, "in"),
+                           pad_x = unit(0.5, "in"), pad_y = unit(0.7, "in"),
                            style = north_arrow_fancy_orienteering)
 
   if(is.null(morepoints)) {
