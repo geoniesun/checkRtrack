@@ -1,10 +1,10 @@
 Package: checkRtrack
-Title: What the Package Does (One Line, Title Case)
+Title: R package to define track widths.
 Version: 0.0.0.9000
 Authors@R: 
     person("Leonie", "Sonntag", , "leonie.sonntag@stud-mail.uni-wuerzburg.de", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: For now, you can define the lowest points along your track,the side limits of the path and then map your progress. You need digitized tracks and a Digital Surface Model. The idea is to be able to individually set your parameters that fit your AOI and to then identify the track widths. It is created for the course "Introduction to Programming with R". 
 License: MIT + file LICENSE
 Encoding: UTF-8
 Language: de

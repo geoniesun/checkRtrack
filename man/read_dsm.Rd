@@ -2,8 +2,7 @@
 % Please edit documentation in R/read_dsm.R
 \name{read_dsm}
 \alias{read_dsm}
-\title{Imports the raster (a Digital Surface Model - dsm).
-For better workflow use function as "dsm <- read_dsm(yourDSMpath)"}
+\title{Imports the raster (a Digital Surface Model - dsm).}
 \usage{
 read_dsm(yourDSMpath)
 }
@@ -14,6 +13,5 @@ read_dsm(yourDSMpath)
 the imported dsm file
 }
 \description{
-Imports the raster (a Digital Surface Model - dsm).
 For better workflow use function as "dsm <- read_dsm(yourDSMpath)"
 }

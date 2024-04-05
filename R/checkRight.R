@@ -1,3 +1,18 @@
+#' Generates the track limit on the right side of the track
+#'
+#' Can save a GeoPackage and return a sf object of right side points
+#'
+#' @param dsm Digital Surface Model raster file as '.tif'.
+#' @param tracks Digital Surface Model raster file as '.tif'.
+#' @param export If 'TRUE' the GeoPackage will be exported to your wd.
+#' @param dist_cross Distance between each crossprofile in meter. Defaults to '1'.
+#' @param profile_length Length of the crossprofile in meter. Defaults to '1'.
+#' @param dist_cross_points Distance of the points on the crossprofile in meter. Defaults to '0.05'.
+#'
+#' @return
+#' @export
+#'
+#' @examples
 checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05) {
 
   checkFunction <- function() {
@@ -180,8 +195,9 @@ checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_lengt
 
   }
 
-  else{ #for now to be ignored, task for later
+  else{
     selected_down <- selected_down[,c("class_id","line_id","slope","max")]
+
     selected_down$Pointtype <- "Right"
   }
 
