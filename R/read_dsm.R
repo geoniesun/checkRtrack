@@ -1,4 +1,5 @@
 #' Imports the raster (a Digital Surface Model - dsm).
+#'
 #' For better workflow use function as "dsm <- read_dsm(yourDSMpath)"
 #'
 #' @param yourDSMpath Your path to your GEOTIFF file (.tif)

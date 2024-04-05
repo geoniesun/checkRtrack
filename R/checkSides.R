@@ -1,4 +1,19 @@
-checkRL <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05) {
+#' Generates the track limit on the right and left side of the track
+#'
+#' Can save a GeoPackage and return a sf object of right and left side points
+#'
+#' @param dsm Digital Surface Model raster file as '.tif'.
+#' @param tracks Digital Surface Model raster file as '.tif'.
+#' @param export If 'TRUE' the GeoPackage will be exported to your wd.
+#' @param dist_cross Distance between each crossprofile in meter. Defaults to '1'.
+#' @param profile_length Length of the crossprofile in meter. Defaults to '1'.
+#' @param dist_cross_points Distance of the points on the crossprofile in meter. Defaults to '0.05'.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05) {
 
   checkFunction <- function() {
     user_input <- readline("Are you sure your Tracks-Layer provides the needed conditions for this function? (y/n)")
@@ -218,6 +233,10 @@ checkRL <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length =
     selected_up <- selected_up[,c("class_id","line_id","slope","max")]
     selected_down <- selected_down[,c("class_id","line_id","slope","max")]
 
+    selected_up$Pointtype <- "Left"
+    selected_down$Pointtype <- "Right"
+
+    joined_points <- dplyr::bind_rows(selected_up,selected_down)
   }
 
 

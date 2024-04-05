@@ -1,3 +1,19 @@
+#' Creates an overview map of a random scene of the data to check the results.
+#'
+#' An overview op of the entire tracks and points would be too messy
+#' so each time running this function, a random spot on your tracks will be mapped to see how it worked out.
+#' The idea is to adjust the parameters used in the functions that created the points.
+#'
+#' @param dsm Digital Surface Model raster file as '.tif'.
+#' @param tracks Digital Surface Model raster file as '.tif'.
+#' @param points A Geopackage of Points that you want to plot
+#' @param morepoints A Geopackage of Points that you want to plot additionally
+#' @param export If 'TRUE', the plot as png will be exported to your wd.
+#'
+#' @return
+#' @export
+#'
+#' @examples
 checkMap <- function(dsm, tracks, points, morepoints=NULL, export = FALSE) {
 
 
@@ -77,7 +93,7 @@ checkMap <- function(dsm, tracks, points, morepoints=NULL, export = FALSE) {
                                    reverse = F)) +
     labs(fill = "m", title = "Overview of what is going on") +
     # coord_sf() +
-    theme(legend.position = "bottom") +
+    theme(legend.position = "right") +
     geom_sf(data=lines_subset, show.legend = FALSE) +
     #geom_sf(data=points_subset, aes(colour = Pointtype)) +
     theme(
@@ -90,6 +106,7 @@ checkMap <- function(dsm, tracks, points, morepoints=NULL, export = FALSE) {
     annotation_scale(location="bl", width_hint = 0.5) +
     annotation_north_arrow(location = "bl",
                            which_north = "true",
+                           pad_x = unit(0.75, "in"), pad_y = unit(0.5, "in"),
                            style = north_arrow_fancy_orienteering)
 
   if(is.null(morepoints)) {
@@ -102,8 +119,10 @@ checkMap <- function(dsm, tracks, points, morepoints=NULL, export = FALSE) {
 
     morepoints_crop <- st_crop(morepoints, dsm_sf)
 
+    morepoints_std <- morepoints_crop[morepoints_crop$line_id %in% points_subset$line_id,]
 
-    allpoints <- bind_rows(points_subset, morepoints_crop)
+
+    allpoints <- bind_rows(points_subset, morepoints_std)
 
     ggmore <- gg + geom_sf(data=allpoints, aes(colour = Pointtype))
 

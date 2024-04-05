@@ -9,7 +9,14 @@ An overview op of the entire tracks and points would be too messy
 so each time running this function, a random spot on your tracks will be mapped to see how it worked out.
 The idea is to adjust the parameters used in the functions that created the points.}
 \usage{
-maptrack(dsm, minimumpoints, tracks, side1_extent = NULL, side2_extent = NULL)
+maptrack(
+  dsm,
+  minimumpoints,
+  tracks,
+  side1_extent = NULL,
+  side2_extent = NULL,
+  export = FALSE
+)
 }
 \arguments{
 \item{dsm}{Digital Surface Model raster file as '.tif'.}
@@ -21,6 +28,8 @@ maptrack(dsm, minimumpoints, tracks, side1_extent = NULL, side2_extent = NULL)
 \item{side1_extent}{Output file of the function 'outer_point'. Left.}
 
 \item{side2_extent}{Output file of the function 'outer_point'. Right.}
+
+\item{export}{}
 }
 \value{
 A plot, each time changing when running the function.

@@ -1,16 +1,14 @@
 
 #' Generates the lowest points along the paths
 #'
-#' 'min_points()' saves a GeoPackage or returns an sf object of minimumpoints.
-#' For a better workflow, use the function as 'minimumpoints <- min_points(...)'.
-#' You can use it then directly as an input for the 'maptrack()' function.
-#'
+#' Can save a GeoPackage and return a sf object of minimumpoints.
+
 
 
 
 #' @param dsm Digital Surface Model raster file as '.tif'.
-#' @param tracks GDigital Surface Model raster file as '.tif'.
-#' @param export
+#' @param tracks Digital Surface Model raster file as '.tif'.
+#' @param export If 'TRUE' the GeoPackage will be exported to your wd.
 #' @param dist_cross Distance between each crossprofile in meter. Defaults to '1'.
 #' @param profile_length Length of the crossprofile in meter. Defaults to '1'.
 #' @param dist_cross_points Distance of the points on the crossprofile in meter. Defaults to '0.05'.
@@ -22,7 +20,7 @@
 #' @examples
 #'
 
-min_points <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06) {
+checkMin <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06) {
 
   checkFunction <- function() {
     user_input <- readline("Are you sure your Tracks-Layer provides the needed conditions for this function?(y/n):")

@@ -93,8 +93,7 @@ maptrack <- function(dsm, minimumpoints, tracks, side1_extent=NULL, side2_extent
                                    title.position = "right",
                                    show.limits =F,
                                    even.steps = T,
-                                   reverse = F
-    )) +
+                                   reverse = F)) +
     labs(fill = "m", title = "Overview of what is going on") +
    # coord_sf() +
     theme(legend.position = "bottom") +
@@ -106,19 +105,36 @@ maptrack <- function(dsm, minimumpoints, tracks, side1_extent=NULL, side2_extent
       axis.ticks.x = element_blank(),
       axis.title.y = element_blank(),
       axis.text.y = element_blank(),
-      axis.ticks.y = element_blank())
+      axis.ticks.y = element_blank()) +
+    annotation_scale(location="bl", width_hint = 0.5) +
+    annotation_north_arrow(location = "bl",
+                     which_north = "true",
+                     style = north_arrow_fancy_orienteering)
+
+
+
 
 
 
 
   if(is.null(side1_extent) & is.null(side2_extent) ) {
 
-    gg + geom_sf(data=points_subset, aes(colour = Pointtype))
+
+    if(isTRUE(export==TRUE)) {
+
+      ggsave("plot_from_checkRtrack.png")}
+
+        gg + geom_sf(data=points_subset, aes(colour = Pointtype))
+
 
 
   }
 
   else if(is.null(side1_extent)) {
+
+    if(isTRUE(export==TRUE)) {
+
+      ggsave("plot_from_checkRtrack.png")}
 
     side2_subset <- st_crop(side2_extent, dsm_sf)
     side2_subset_std <- side2_subset[side2_subset$line_id %in% points_subset$line_id,]
@@ -128,9 +144,14 @@ maptrack <- function(dsm, minimumpoints, tracks, side1_extent=NULL, side2_extent
     gg + geom_sf(data=side2_subset_std, aes(shape = Pointtype)) +
       geom_sf(data=points_subset, aes(colour = Pointtype))
 
+
   }
 
   else if(is.null(side2_extent)) {
+
+    if(isTRUE(export==TRUE)) {
+
+      ggsave("plot_from_checkRtrack.png")}
 
 
     side1_subset <- st_crop(side1_extent, dsm_sf)
@@ -144,9 +165,15 @@ maptrack <- function(dsm, minimumpoints, tracks, side1_extent=NULL, side2_extent
       geom_sf(data=points_subset, aes(colour = Pointtype))
 
 
+
   }
 
   else {
+
+    if(isTRUE(export==TRUE)) {
+
+      ggsave("plot_from_checkRtrack.png")}
+
 
     side1_subset <- st_crop(side1_extent, dsm_sf)
     side1_subset_std <- side1_subset[side1_subset$line_id %in% points_subset$line_id,]
@@ -162,14 +189,11 @@ maptrack <- function(dsm, minimumpoints, tracks, side1_extent=NULL, side2_extent
       geom_sf(data=side1_subset_std, aes(colour = Pointtype)) +
       geom_sf(data=points_subset, aes(colour = Pointtype))
 
+
   }
 
-
-if(isTRUE(export==TRUE)) {
-
-  ggsave("plot_from_checkRtrack.png")
 }
 
-}
+
 
 
