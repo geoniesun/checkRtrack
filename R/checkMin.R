@@ -1,12 +1,16 @@
 
 #' Generates the lowest points along the paths
 #'
-#' 'min_points()' saves a GeoPackage
+#' 'min_points()' saves a GeoPackage or returns an sf object of minimumpoints.
+#' For a better workflow, use the function as 'minimumpoints <- min_points(...)'.
+#' You can use it then directly as an input for the 'maptrack()' function.
+#'
 
 
 
 #' @param dsm Digital Surface Model raster file as '.tif'.
 #' @param tracks GDigital Surface Model raster file as '.tif'.
+#' @param export
 #' @param dist_cross Distance between each crossprofile in meter. Defaults to '1'.
 #' @param profile_length Length of the crossprofile in meter. Defaults to '1'.
 #' @param dist_cross_points Distance of the points on the crossprofile in meter. Defaults to '0.05'.
@@ -16,14 +20,17 @@
 #' @export
 #'
 #' @examples
-min_points <- function(dsm, tracks, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06) {
+#'
+
+min_points <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06) {
 
   checkFunction <- function() {
-    user_input <- readline("Are you sure your Tracks-Layer provides the needed conditions for this function? (y/n)")
-    if(user_input != "y") stop("Exiting since you did not press y")
+    user_input <- readline("Are you sure your Tracks-Layer provides the needed conditions for this function?(y/n):")
+    if(user_input != "y") stop("Exiting since you did not press y.
+                               Please import your tracks layer with the import function 'read_tracks() to check the conditions.")
   }
 
-  checkFunction()
+  checkFunction() #if
 
   #points along geometry = PAG
   result <- qgis_run_algorithm(
@@ -81,13 +88,15 @@ min_points <- function(dsm, tracks, dist_cross = 1, profile_length = 1, dist_cro
 
   #join attributes by location
 
-  joinedL <- st_join(bufferedpoints, gbe, left = T)#until here the package worked 25.03.2024
+  joinedL <- st_join(bufferedpoints, gbe, left = T)
 
   # recreate center points of buffers to later add the DSM data
 
   centerpoints <- sf::st_centroid(joinedL)
 
   # adding the dsm values to the points
+  centerpoints <- st_transform(centerpoints, crs = st_crs(dsm))
+
   dsmpoints <- terra::extract(dsm,centerpoints)
   centerpoints$z <- dsmpoints[, -1]
 
@@ -97,14 +106,29 @@ min_points <- function(dsm, tracks, dist_cross = 1, profile_length = 1, dist_cro
   centerpoints <- centerpoints %>%
     dplyr::select(!ends_with("y"))
 
-  centerpoints <-  centerpoints %>%
-    dplyr::rename(
-      class_id = class_id.x,
-      line_id = line_id.x,
-      fade_scr = fade_scr.x,
-      distance = distance.x,
-      angle = angle.x
-    )
+  if ("fade_scr.x" %in% colnames(centerpoints)) {
+
+    centerpoints <-  centerpoints %>%
+      dplyr::rename(
+        class_id = class_id.x,
+        line_id = line_id.x,
+        fade_scr = fade_scr.x,
+        distance = distance.x,
+        angle = angle.x
+      )
+  }
+  else {
+    centerpoints <-  centerpoints %>%
+      dplyr::rename(
+        class_id = class_id.x,
+        line_id = line_id.x,
+        distance = distance.x,
+        angle = angle.x
+      )
+
+  }
+
+
 
 
   #categorial statistics
@@ -128,14 +152,32 @@ min_points <- function(dsm, tracks, dist_cross = 1, profile_length = 1, dist_cro
   #select objects where Z value is the same as minimum value (so we only have the minimum object of the profiles)
   selected <- pointsandstats[pointsandstats$z == pointsandstats$min,]
   selected <- selected[selected$stddev > st_dev,]
-  selected <- selected[,c("class_id","fade_scr","line_id","z","min","stddev","median", "mean")]
+
+  if ("fade_scr" %in% colnames(selected)) {
+    minimumpoints <- selected[,c("class_id","fade_scr","line_id","z","min","stddev","median", "mean")]
+    minimumpoints$Pointtype <- "Minimum"
+
+  }
+  else{
+    minimumpoints <- selected[,c("class_id","line_id","z","min","stddev","median", "mean")]
+    minimumpoints$Pointtype <- "Minimum"
+  }
 
 
-  st_write(selected, "minimumpoints.gpkg", driver = "GPKG")
+
+  if(export) {
+    st_write(minimumpoints, "minimumpoints.gpkg", driver = "GPKG")
+    return("You now have a GPKG Layer with minimumpoints along your track in your outputfolder")
+ }
+ if(!export){
+   return(minimumpoints)
+ }
 
 
 
-  return("You now have a GPKG Layer with minimumpoints along your track in your outputfolder")
+
+
+
 
 }
 

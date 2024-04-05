@@ -29,6 +29,15 @@ You can install checkRtrack with
 ``` r
 # install.packages("devtools")
 devtools::install_github("geoniesun/checkRtrack")
+
+   library(ggplot2)
+   library(sf)
+   library(terra)
+   library(qgisprocess)
+   library(dplyr)
+   library(ggnewscale)
+   library(tidyterra)
+   library(colorspace)
 ```
 
 ## Exemplary Usage
@@ -41,7 +50,9 @@ library(checkRtrack)
 ```
 
 ## Roadmap
+- [ ]  Fix bug: when fade_scr not included, plot looks wrong
 - [ ]  Visualize the crossprofiles from the side. To see if there is actually a path
+- [ ]  Take out the fade score as necessary column
 - [ ]  Set more filter that determine a path
 - [ ]  Create more options to modify the users definition of the "path end" (for now its the steepest slope point)
 

@@ -1,21 +1,9 @@
-
-#' Generates the outer limit of the path as points on the crossprofiles.
-#'
-#' @param dsm Digital Surface Model raster file as '.tif'.
-#' @param tracks GeoPackage file of lines
-#' @param dist_cross Distance between each crossprofile in meter. Defaults to '1'.
-#' @param profile_length Length of the crossprofile in meter. Defaults to '1'.
-#' @param dist_cross_points Distance of the points on the crossprofile in meter. Defaults to '0.05'.
-#'
-#' @return A GeoPackage of points on the left and right side of the path.
-#' @export
-#'
-#' @examples
-outer_points <- function(dsm, tracks, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05) {
+checkLeft <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05) {
 
   checkFunction <- function() {
     user_input <- readline("Are you sure your Tracks-Layer provides the needed conditions for this function? (y/n)")
-    if(user_input != "y") stop("Exiting since you did not press y. You can adjust you column names and try again")
+    if(user_input != "y") stop("Exiting since you did not press y.
+                               Please import your tracks layer with the import function 'read_tracks() to check the conditions.")
 
   }
 
@@ -23,8 +11,12 @@ outer_points <- function(dsm, tracks, dist_cross = 1, profile_length = 1, dist_c
 
   #first lets make the dsm a bit smaller
 
+  tracks <- st_transform(tracks, crs=st_crs(dsm))
 
   bufferedtrack <- sf::st_buffer(tracks, profile_length, endCapStyle = "ROUND", joinStyle = "ROUND")
+
+
+
 
   # Clip dsm by buffer
   dsm_clipped <- mask(dsm, bufferedtrack)
@@ -114,14 +106,27 @@ outer_points <- function(dsm, tracks, dist_cross = 1, profile_length = 1, dist_c
   centerpoints <- centerpoints %>%
     dplyr::select(!ends_with("y"))
 
-  centerpoints <-  centerpoints %>%
-    dplyr::rename(
-      class_id = class_id.x,
-      line_id = line_id.x,
-      fade_scr = fade_scr.x,
-      distance = distance.x,
-      angle = angle.x
-    )
+  if ("fade_scr.x" %in% colnames(centerpoints)) {
+
+    centerpoints <-  centerpoints %>%
+      dplyr::rename(
+        class_id = class_id.x,
+        line_id = line_id.x,
+        fade_scr = fade_scr.x,
+        distance = distance.x,
+        angle = angle.x
+      )
+  }
+  else {
+    centerpoints <-  centerpoints %>%
+      dplyr::rename(
+        class_id = class_id.x,
+        line_id = line_id.x,
+        distance = distance.x,
+        angle = angle.x
+      )
+
+  }
 
   #here i have to split the upper and down parts
   sidebuff_distance <- profile_length/2
@@ -138,24 +143,9 @@ outer_points <- function(dsm, tracks, dist_cross = 1, profile_length = 1, dist_c
   qgis_extract_output(upbuff)
   upbuff <- sf::st_as_sf(upbuff)
 
-  downbuff <- qgis_run_algorithm(
-    algorithm = "native:singlesidedbuffer",
-    INPUT = tracks,
-    DISTANCE = sidebuff_distance ,
-    SIDE = 0,
-    SEGMENTS =8,
-    JOIN_STYLE=0,
-    MITER_LIMIT= 2
-  )
-
-  qgis_extract_output(downbuff)
-  downbuff <- sf::st_as_sf(downbuff)
 
 
   upperslope <- st_filter(centerpoints,upbuff)
-
-  downerslope <- st_filter(centerpoints,downbuff)
-
 
 
   #categorial statistics
@@ -168,45 +158,42 @@ outer_points <- function(dsm, tracks, dist_cross = 1, profile_length = 1, dist_c
 
   )
 
-  downerstats <- qgis_run_algorithm(
-    algorithm = "qgis:statisticsbycategories",
-    INPUT = downerslope,
-    VALUES_FIELD_NAME = "slope",
-    CATEGORIES_FIELD_NAME = "line_id"
 
-  )
 
   su <- qgis_extract_output(upperstats)
   stats_up <- sf::st_as_sf(su)
 
-  sd <- qgis_extract_output(downerstats)
-  stats_down <- sf::st_as_sf(sd)
-
-
-
 
   #join attributs from points layer with dsm info by line_id and min(z)
   slope_up_stats <- dplyr::left_join(upperslope, stats_up, by = "line_id")
-  slope_down_stats <- dplyr::left_join(downerslope, stats_down, by = "line_id")
-
-
-
-
-
-
-  st_write(slope_up_stats, "upperslope.gpkg", append=F)
-  st_write(slope_down_stats, "downerslope.gpkg", append=F)
-
 
   #select objects where slope value is the same as max value (so we only have the max slope object of the profiles)
   selected_up <- slope_up_stats[slope_up_stats$slope == slope_up_stats$max,]
-  selected_down <- slope_down_stats[slope_down_stats$slope == slope_down_stats$max,]
 
-  selected_up <- selected_up[,c("class_id","fade_scr","line_id","slope","max")]
-  selected_down <- selected_down[,c("class_id","fade_scr","line_id","slope","max")]
 
-  st_write(selected_up, "side1_extent.gpkg", driver = "GPKG")
-  st_write(selected_down, "side2_extent.gpkg", driver = "GPKG")
+  if ("fade_scr" %in% colnames(selected_up)) {
+
+    selected_up <- selected_up[,c("class_id","fade_scr","line_id","slope","max")]
+
+
+    selected_up$Pointtype <- "Left"
+
+  }
+
+  else{ #for now to be ignored, task for later
+    selected_up <- selected_up[,c("class_id","line_id","slope","max")]
+    selected_up$Pointtype <- "Left"
+  }
+
+
+
+  if(isTRUE(export)) {
+
+    st_write(selected_up, "left_points.gpkg", driver = "GPKG")
+
+
+  }
+
 
 
 }

@@ -7,6 +7,7 @@
 min_points(
   dsm,
   tracks,
+  export = TRUE,
   dist_cross = 1,
   profile_length = 1,
   dist_cross_points = 0.05,
@@ -30,5 +31,7 @@ min_points(
 Saves a GeoPackage in the outputfolder of the minimumpoints
 }
 \description{
-'min_points()' saves a GeoPackage
+'min_points()' saves a GeoPackage or returns an sf object of minimumpoints.
+For a better workflow, use the function as 'minimumpoints <- min_points(...)'.
+You can use it then directly as an input for the 'maptrack()' function.
 }

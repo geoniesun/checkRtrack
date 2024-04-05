@@ -11,14 +11,15 @@
 #' @param dsm Digital Surface Model raster file as '.tif'.
 #' @param minimumpoints Output file of function 'min_points' as GeoPackage.
 #' @param tracks Digital Surface Model raster file as '.tif'.
-#' @param side1_extent Output file of the function 'outer_points'. Left.
-#' @param side2_extent Output file of the function 'outer_points'. Right.
+#' @param side1_extent Output file of the function 'outer_point'. Left.
+#' @param side2_extent Output file of the function 'outer_point'. Right.
+#' @param export
 #'
 #' @return A plot, each time changing when running the function.
 #' @export
 #'
 #' @examples
-maptrack <- function(dsm, minimumpoints, tracks, side1_extent=NULL, side2_extent=NULL) {
+maptrack <- function(dsm, minimumpoints, tracks, side1_extent=NULL, side2_extent=NULL, export = FALSE) {
 
 
 
@@ -45,16 +46,6 @@ maptrack <- function(dsm, minimumpoints, tracks, side1_extent=NULL, side2_extent
   lines_subset <- st_crop(tracks, dsm_sf)
   points_subset <- st_crop(minimumpoints, dsm_sf)
   points_subset$Pointtype <- "Minimum"
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -105,9 +96,9 @@ maptrack <- function(dsm, minimumpoints, tracks, side1_extent=NULL, side2_extent
                                    reverse = F
     )) +
     labs(fill = "m", title = "Overview of what is going on") +
-    coord_sf() +
+   # coord_sf() +
     theme(legend.position = "bottom") +
-    geom_sf(data=lines_subset) +
+    geom_sf(data=lines_subset, show.legend = FALSE) +
     #geom_sf(data=points_subset, aes(shape = Pointtype)) +
     theme(
       axis.title.x = element_blank(),
@@ -174,7 +165,10 @@ maptrack <- function(dsm, minimumpoints, tracks, side1_extent=NULL, side2_extent
   }
 
 
+if(isTRUE(export==TRUE)) {
 
+  ggsave("plot_from_checkRtrack.png")
+}
 
 }
 
