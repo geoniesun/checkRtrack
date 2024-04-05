@@ -1,12 +1,12 @@
 #' Track data for my R package
 #'
-#' @name tracks
+#' @name dsm
 #' @docType data
 #' @author Leonie Sonntag
-#' @usage data(tracks)
+#' @usage data(dsm)
 #'
 #' @examples
-#' tracks <- data(tracks)
-#' plot(tracks)
+#' dsm <- data(dsm)
+#' plot(dsm)
 
-tracks
+dsm
