@@ -1,13 +1,13 @@
+#' @export
 #' Imports your track data
 #'
 #' This functions helps to prepare your track-data for the other steps.
 #' This step is highly recommended before using the other functions.
 #' For a better workflow use function as "tracks <- read_track(yourTracksPath)"
-#'
 #' @param yourTracksPath Your path to your GeoPackage file
 #'
 #'
-#' @export
+
 #' @import ggplot2
 #' @import sf
 #' @import terra

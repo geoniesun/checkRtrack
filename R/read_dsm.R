@@ -16,6 +16,8 @@
 #' @import colorspace
 #' @import ggspatial
 #' @examples
+#'
+#'
 read_dsm <- function(yourDSMpath) {
 
   if(!file.exists(yourDSMpath)) stop("DSM file does not exist. The file you tried to import: ", yourDSMpath, call = FALSE)
