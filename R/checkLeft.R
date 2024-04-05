@@ -1,34 +1,34 @@
-
-#' Generates the lowest points along the paths
-#'
-#' 'min_points()' saves a GeoPackage or returns an sf object of minimumpoints.
-#' For a better workflow, use the function as 'minimumpoints <- min_points(...)'.
-#' You can use it then directly as an input for the 'maptrack()' function.
-#'
-
-
-
-#' @param dsm Digital Surface Model raster file as '.tif'.
-#' @param tracks GDigital Surface Model raster file as '.tif'.
-#' @param export
-#' @param dist_cross Distance between each crossprofile in meter. Defaults to '1'.
-#' @param profile_length Length of the crossprofile in meter. Defaults to '1'.
-#' @param dist_cross_points Distance of the points on the crossprofile in meter. Defaults to '0.05'.
-#' @param st_dev Minimum standarddeviation of crossprofile dsm-value 'z'. Acts as a filter. Defaults to '0.06'.
-#'
-#' @return Saves a GeoPackage in the outputfolder of the minimumpoints
-#' @export
-#'
-#' @examples
-min_points <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06) {
+checkLeft <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05) {
 
   checkFunction <- function() {
-    user_input <- readline("Are you sure your Tracks-Layer provides the needed conditions for this function?(y/n):")
+    user_input <- readline("Are you sure your Tracks-Layer provides the needed conditions for this function? (y/n)")
     if(user_input != "y") stop("Exiting since you did not press y.
                                Please import your tracks layer with the import function 'read_tracks() to check the conditions.")
+
   }
 
   checkFunction()
+
+  #first lets make the dsm a bit smaller
+
+  tracks <- st_transform(tracks, crs=st_crs(dsm))
+
+  bufferedtrack <- sf::st_buffer(tracks, profile_length, endCapStyle = "ROUND", joinStyle = "ROUND")
+
+
+
+
+  # Clip dsm by buffer
+  dsm_clipped <- mask(dsm, bufferedtrack)
+
+  slope <- qgis_run_algorithm(
+    algorithm = "native:slope",
+    INPUT = dsm_clipped,
+    Z_FACTOR = 1 #means no exaggeration
+  )
+  qgis_extract_output(slope)
+  slope <- qgis_as_terra(slope)
+
 
   #points along geometry = PAG
   result <- qgis_run_algorithm(
@@ -86,17 +86,19 @@ min_points <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_lengt
 
   #join attributes by location
 
-  joinedL <- st_join(bufferedpoints, gbe, left = T)
+  joinedL <- st_join(bufferedpoints, gbe, left = T)#until here the package worked 25.03.2024
 
   # recreate center points of buffers to later add the DSM data
 
   centerpoints <- sf::st_centroid(joinedL)
 
-  # adding the dsm values to the points
-  centerpoints <- st_transform(centerpoints, crs = st_crs(dsm))
-
+  # adding the slope values to the points
+  slopepoints <- terra::extract(slope,centerpoints)
+  centerpoints$slope <- slopepoints[, -1]
+  #adding dsm values for bringing it together later
   dsmpoints <- terra::extract(dsm,centerpoints)
   centerpoints$z <- dsmpoints[, -1]
+
 
 
 
@@ -126,53 +128,71 @@ min_points <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_lengt
 
   }
 
+  #here i have to split the upper and down parts
+  sidebuff_distance <- profile_length/2
 
+  upbuff <- qgis_run_algorithm(
+    algorithm = "native:singlesidedbuffer",
+    INPUT = tracks,
+    DISTANCE = sidebuff_distance ,
+    SIDE = 1,
+    SEGMENTS =8,
+    JOIN_STYLE=0,
+    MITER_LIMIT= 2
+  )
+  qgis_extract_output(upbuff)
+  upbuff <- sf::st_as_sf(upbuff)
+
+
+
+  upperslope <- st_filter(centerpoints,upbuff)
 
 
   #categorial statistics
 
-  catstats <- qgis_run_algorithm(
+  upperstats <- qgis_run_algorithm(
     algorithm = "qgis:statisticsbycategories",
-    INPUT = centerpoints,
-    VALUES_FIELD_NAME = "z",
+    INPUT = upperslope,
+    VALUES_FIELD_NAME = "slope",
     CATEGORIES_FIELD_NAME = "line_id"
 
   )
 
-  s <- qgis_extract_output(catstats)
-  stats <- sf::st_as_sf(s)
+
+
+  su <- qgis_extract_output(upperstats)
+  stats_up <- sf::st_as_sf(su)
 
 
   #join attributs from points layer with dsm info by line_id and min(z)
-  pointsandstats <- dplyr::left_join(centerpoints, stats, by = "line_id")
+  slope_up_stats <- dplyr::left_join(upperslope, stats_up, by = "line_id")
+
+  #select objects where slope value is the same as max value (so we only have the max slope object of the profiles)
+  selected_up <- slope_up_stats[slope_up_stats$slope == slope_up_stats$max,]
 
 
-  #select objects where Z value is the same as minimum value (so we only have the minimum object of the profiles)
-  selected <- pointsandstats[pointsandstats$z == pointsandstats$min,]
-  selected <- selected[selected$stddev > st_dev,]
+  if ("fade_scr" %in% colnames(selected_up)) {
 
-  if ("fade_scr" %in% colnames(selected)) {
-    minimumpoints <- selected[,c("class_id","fade_scr","line_id","z","min","stddev","median", "mean")]
+    selected_up <- selected_up[,c("class_id","fade_scr","line_id","slope","max")]
+
+
+    selected_up$Pointtype <- "Left"
 
   }
-  else{
-    minimumpoints <- selected[,c("class_id","line_id","z","min","stddev","median", "mean")]
 
+  else{ #for now to be ignored, task for later
+    selected_up <- selected_up[,c("class_id","line_id","slope","max")]
+    selected_up$Pointtype <- "Left"
   }
 
 
 
-  if(export) {
-    st_write(minimumpoints, "minimumpoints.gpkg", driver = "GPKG")
-    return("You now have a GPKG Layer with minimumpoints along your track in your outputfolder")
- }
- if(!export){
-   return(minimumpoints)
- }
+  if(isTRUE(export)) {
+
+    st_write(selected_up, "left_points.gpkg", driver = "GPKG")
 
 
-
-
+  }
 
 
 
