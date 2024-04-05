@@ -1,4 +1,3 @@
-#' @export
 #' Imports your track data
 #'
 #' This functions helps to prepare your track-data for the other steps.
@@ -7,7 +6,7 @@
 #' @param yourTracksPath Your path to your GeoPackage file
 #'
 #'
-
+#' @export
 #' @import ggplot2
 #' @import sf
 #' @import terra
