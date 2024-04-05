@@ -9,11 +9,13 @@ read_tracks(yourTracksPath)
 \arguments{
 \item{yourTracksPath}{Your path to your GeoPackage file}
 }
-\value{
-The imported tracks
-}
 \description{
 This functions helps to prepare your track-data for the other steps.
 This step is highly recommended before using the other functions.
 For a better workflow use function as "tracks <- read_track(yourTracksPath)"
+}
+\examples{
+read_tracks(tracks)
+
+
 }

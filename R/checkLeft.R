@@ -12,6 +12,7 @@
 #' @return
 #' @export
 #'
+
 #' @examples
 checkLeft <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05) {
 

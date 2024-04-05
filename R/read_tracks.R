@@ -6,10 +6,19 @@
 #'
 #' @param yourTracksPath Your path to your GeoPackage file
 #'
-#' @return The imported tracks
-#' @export
 #'
+#' @export
+#' @import ggplot2
+#' @import sf
+#' @import terra
+#' @import qgisprocess
+#' @import dplyr
+#' @import ggnewscale
+#' @import tidyterra
+#' @import colorspace
+#' @import ggspatial
 #' @examples
+#' read_tracks(tracks)
 #'
 #'
 read_tracks <- function(yourTracksPath) {

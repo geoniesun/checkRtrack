@@ -6,7 +6,15 @@
 #'
 #' @return the imported dsm file
 #' @export
-#'
+#' @import ggplot2
+#' @import sf
+#' @import terra
+#' @import qgisprocess
+#' @import dplyr
+#' @import ggnewscale
+#' @import tidyterra
+#' @import colorspace
+#' @import ggspatial
 #' @examples
 read_dsm <- function(yourDSMpath) {
 

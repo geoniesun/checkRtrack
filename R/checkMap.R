@@ -12,7 +12,15 @@
 #'
 #' @return
 #' @export
-#'
+#' @import ggplot2
+#' @import sf
+#' @import terra
+#' @import qgisprocess
+#' @import dplyr
+#' @import ggnewscale
+#' @import tidyterra
+#' @import colorspace
+#' @import ggspatial
 #' @examples
 checkMap <- function(dsm, tracks, points, morepoints=NULL, export = FALSE) {
 
