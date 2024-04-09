@@ -31,12 +31,8 @@ devtools::install_github("geoniesun/checkRtrack")
 
 ## Exemplary Usage
 
-This is a basic example which shows you how to solve a common problem:
-
 ``` r
-library(checkRtrack)
-#> This is version 0.0.0.9000 of checkRtrack
-#> Here I can insert some more comments fpr the starting
+#library(checkRtrack)
 ## basic example code
 ```
 
@@ -49,13 +45,3 @@ library(checkRtrack)
 - [ ] Set more filter that determine a path
 - [ ] Create more options to modify the users definition of the “path
   end” (for now its the steepest slope point)
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
