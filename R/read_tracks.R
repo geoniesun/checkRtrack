@@ -17,7 +17,7 @@
 #' @import colorspace
 #' @import ggspatial
 #' @examples
-#' read_tracks(tracks)
+#'
 #'
 #'
 read_tracks <- function(yourTracksPath) {
