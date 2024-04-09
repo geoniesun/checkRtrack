@@ -26,6 +26,9 @@ checkMap <- function(dsm, tracks, points, morepoints=NULL, export = FALSE) {
 
 
 
+  #adding tracks_id column to the tracks
+  tracks$track_id <- seq.int(nrow(tracks))
+
 
   # Step 2: Generate random coordinates within your data extent
   randompoint <- points[sample(nrow(points), 1),]
@@ -118,7 +121,8 @@ checkMap <- function(dsm, tracks, points, morepoints=NULL, export = FALSE) {
                            style = north_arrow_fancy_orienteering)
 
   if(is.null(morepoints)) {
-    ggone <- gg + geom_sf(data=points_subset, aes(colour = Pointtype))
+    ggone <- gg + geom_sf(data=points_subset, aes(colour = Pointtype, size = class_id))
+
            return(ggone)
 
   }
@@ -132,7 +136,7 @@ checkMap <- function(dsm, tracks, points, morepoints=NULL, export = FALSE) {
 
     allpoints <- bind_rows(points_subset, morepoints_std)
 
-    ggmore <- gg + geom_sf(data=allpoints, aes(colour = Pointtype))
+    ggmore <- gg + geom_sf(data=allpoints, aes(colour = Pointtype, size = class_id))
 
     return(ggmore)
 

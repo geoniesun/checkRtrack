@@ -24,6 +24,11 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_lengt
 
   checkFunction()
 
+
+  #adding tracks_id column to the tracks
+  tracks$track_id <- seq.int(nrow(tracks))
+
+
   #first lets make the dsm a bit smaller
 
   tracks <- st_transform(tracks, crs=st_crs(dsm))
@@ -129,7 +134,8 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_lengt
         line_id = line_id.x,
         fade_scr = fade_scr.x,
         distance = distance.x,
-        angle = angle.x
+        angle = angle.x,
+        track_id = track_id.x
       )
   }
   else {
@@ -138,7 +144,8 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_lengt
         class_id = class_id.x,
         line_id = line_id.x,
         distance = distance.x,
-        angle = angle.x
+        angle = angle.x,
+        track_id = track_id.x
       )
 
   }
@@ -217,8 +224,8 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_lengt
 
   if ("fade_scr" %in% colnames(selected_up) | "fade_scr" %in% colnames(selected_down)) {
 
-    selected_up <- selected_up[,c("class_id","fade_scr","line_id","slope","max")]
-    selected_down <- selected_down[,c("class_id","fade_scr","line_id","slope","max")]
+    selected_up <- selected_up[,c("class_id","fade_scr","line_id","slope","max", "track_id")]
+    selected_down <- selected_down[,c("class_id","fade_scr","line_id","slope","max", "track_id")]
 
     selected_up$Pointtype <- "Left"
     selected_down$Pointtype <- "Right"
@@ -230,8 +237,8 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_lengt
   }
 
   else{ #for now to be ignored, task for later
-    selected_up <- selected_up[,c("class_id","line_id","slope","max")]
-    selected_down <- selected_down[,c("class_id","line_id","slope","max")]
+    selected_up <- selected_up[,c("class_id","line_id","slope","max", "track_id")]
+    selected_down <- selected_down[,c("class_id","line_id","slope","max", "track_id")]
 
     selected_up$Pointtype <- "Left"
     selected_down$Pointtype <- "Right"
@@ -248,7 +255,7 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_lengt
 
   }
 
-
+return(joined_points)
 
 }
 

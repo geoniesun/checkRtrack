@@ -24,11 +24,16 @@ checkLeft <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length
   }
 
   checkFunction()
+  #adding tracks_id column to the tracks
+  tracks$track_id <- seq.int(nrow(tracks))
 
-  #first lets make the dsm a bit smaller
+
+
+
 
   tracks <- st_transform(tracks, crs=st_crs(dsm))
 
+  #lets make the dsm a bit smaller
   bufferedtrack <- sf::st_buffer(tracks, profile_length, endCapStyle = "ROUND", joinStyle = "ROUND")
 
 
@@ -130,7 +135,8 @@ checkLeft <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length
         line_id = line_id.x,
         fade_scr = fade_scr.x,
         distance = distance.x,
-        angle = angle.x
+        angle = angle.x,
+        track_id = track_id.x
       )
   }
   else {
@@ -139,7 +145,8 @@ checkLeft <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length
         class_id = class_id.x,
         line_id = line_id.x,
         distance = distance.x,
-        angle = angle.x
+        angle = angle.x,
+        track_id = track_id.x
       )
 
   }
@@ -189,7 +196,7 @@ checkLeft <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length
 
   if ("fade_scr" %in% colnames(selected_up)) {
 
-    selected_up <- selected_up[,c("class_id","fade_scr","line_id","slope","max")]
+    selected_up <- selected_up[,c("class_id","fade_scr","line_id","slope","max", "track_id")]
 
 
     selected_up$Pointtype <- "Left"
@@ -197,7 +204,7 @@ checkLeft <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length
   }
 
   else{ #for now to be ignored, task for later
-    selected_up <- selected_up[,c("class_id","line_id","slope","max")]
+    selected_up <- selected_up[,c("class_id","line_id","slope","max", "track_id")]
     selected_up$Pointtype <- "Left"
   }
 
@@ -210,7 +217,7 @@ checkLeft <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length
 
   }
 
-
+return(selected_up)
 
 }
 

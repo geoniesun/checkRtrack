@@ -30,6 +30,10 @@ checkMin <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length 
 
   checkFunction() #if
 
+  #adding tracks_id column to the tracks
+  tracks$track_id <- seq.int(nrow(tracks))
+
+
   #points along geometry = PAG
   result <- qgis_run_algorithm(
     algorithm = "native:pointsalonglines",
@@ -112,7 +116,8 @@ checkMin <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length 
         line_id = line_id.x,
         fade_scr = fade_scr.x,
         distance = distance.x,
-        angle = angle.x
+        angle = angle.x,
+        track_id = track_id.x
       )
   }
   else {
@@ -121,7 +126,8 @@ checkMin <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length 
         class_id = class_id.x,
         line_id = line_id.x,
         distance = distance.x,
-        angle = angle.x
+        angle = angle.x,
+        track_id = track_id.x
       )
 
   }
@@ -152,12 +158,12 @@ checkMin <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length 
   selected <- selected[selected$stddev > st_dev,]
 
   if ("fade_scr" %in% colnames(selected)) {
-    minimumpoints <- selected[,c("class_id","fade_scr","line_id","z","min","stddev","median", "mean")]
+    minimumpoints <- selected[,c("class_id","fade_scr","line_id","z","min","stddev","median", "mean", "track_id")]
     minimumpoints$Pointtype <- "Minimum"
 
   }
   else{
-    minimumpoints <- selected[,c("class_id","line_id","z","min","stddev","median", "mean")]
+    minimumpoints <- selected[,c("class_id","line_id","z","min","stddev","median", "mean", "track_id")]
     minimumpoints$Pointtype <- "Minimum"
   }
 
@@ -165,13 +171,11 @@ checkMin <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length 
 
   if(export) {
     st_write(minimumpoints, "minimumpoints.gpkg", driver = "GPKG")
-    return("You now have a GPKG Layer with minimumpoints along your track in your outputfolder")
- }
- if(!export){
-   return(minimumpoints)
+    message("You now have a GPKG Layer with minimumpoints along your track in your outputfolder")
  }
 
 
+  return(minimumpoints)
 
 
 
