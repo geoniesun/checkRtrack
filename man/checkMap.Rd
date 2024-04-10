@@ -4,7 +4,14 @@
 \alias{checkMap}
 \title{Creates an overview map of a random scene of the data to check the results.}
 \usage{
-checkMap(dsm, tracks, points, morepoints = NULL, export = FALSE)
+checkMap(
+  dsm,
+  tracks,
+  points,
+  morepoints = NULL,
+  evenmorepoints = NULL,
+  export = FALSE
+)
 }
 \arguments{
 \item{dsm}{Digital Surface Model raster file as '.tif'.}
@@ -14,6 +21,8 @@ checkMap(dsm, tracks, points, morepoints = NULL, export = FALSE)
 \item{points}{A Geopackage of Points that you want to plot}
 
 \item{morepoints}{A Geopackage of Points that you want to plot additionally}
+
+\item{evenmorepoints}{A Geopackage of Points that you want to plot additionally}
 
 \item{export}{If 'TRUE', the plot as png will be exported to your wd.}
 }

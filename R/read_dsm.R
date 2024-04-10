@@ -16,6 +16,7 @@
 #' @import colorspace
 #' @import ggspatial
 #' @examples
+#' dsm <- read_dsm(system.file("tif/dsm_small.tif", package = "checkRtrack"))
 #'
 #'
 read_dsm <- function(yourDSMpath) {
