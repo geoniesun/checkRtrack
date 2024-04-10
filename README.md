@@ -7,12 +7,25 @@
 <!-- badges: end -->
 
 R package to define track widths. It is created for the course
-“Introduction to Programming with R”. For now, you can define the lowest
-points along your track to then define the outer limits of the tracks.
+“Introduction to Programming with R” and for my HiWi. For now, you can
+define the lowest points along your track to then define the outer
+limits of the tracks and then visualize your progress. The main idea is,
+that you have digitized (animal)-tracks and a (high resolution) Digital
+Surface Model (DSM). The animals stamping out the grassland could make
+the width of the path visible with the DSM. The width is defined as the
+steepest point on each side of the path. With parameters you can adjust
+your calculations of the width and then always visualize it to check out
+what is going on. To understand the parameters, please see section ‘What
+are these parameters for?’.
+
+The goal is later, to create the mean width for each track segment.
+
+Here is a workflow example that could help with understanding how it
+works:
 
 ## Installation
 
-You can install checkRtrack with
+Let us first install the package:
 
 ``` r
 # install.packages("devtools")
@@ -28,6 +41,64 @@ devtools::install_github("geoniesun/checkRtrack")
    library(colorspace)
    library(ggspatial)
 ```
+
+Next step would be to load the data - the digitized tracks and the DSM:
+
+``` r
+#load tracks 
+tracks <- read_tracks("your/path/tracks.gpkg")
+
+#load dsm
+dsm <- read_dsm("your/path/dsm.tif")
+```
+
+For now, it’s always best to start with generating the minimumpoints.
+(Check the setting of the parameters under section ’What are these
+parameters for?). You can also export the GeoPackage and work on it in
+QGIS or similar:
+
+``` r
+# create a variable 'mini' to have it ready for the visualization later
+mini <- checkMin(dsm, tracks, export = FALSE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06)
+```
+
+Let’s have a first look on our minimumpoints. As the entire dataset with
+all points would be too messy for a quick Map, you will always get a
+random spot on your tracks that you can have a look on. So just run the
+line as many times as you want, to have a look on different areas.
+
+``` r
+#creating a random zoom plot of the minimumpoints
+checkMap(dsm, tracks, points = mini, export = FALSE)
+```
+
+Now let’s see for the sides. You can go immediately for both sides with
+‘checkSides()’ or look on each one with ‘checkRight()’ or ‘checkLeft()’.
+For now we go with both:
+
+``` r
+#generate side extend of the path
+sides <- checkSides(dsm, tracks, export = FALSE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05)
+```
+
+Let’s check again the map:
+
+``` r
+#plot random map of minimum and side points
+checkMap(dsm, tracks, points = mini, morepoints = sides, export = FALSE)
+```
+
+## What are these parameters for?
+
+We have three parameters that we can adjust. This depends on your size
+of tracks that you want to look at.
+
+<figure>
+<img
+src="https://github.com/geoniesun/checkRtrack/%5Bmain%5D/images/paramters.png?raw=true"
+alt="alt text" />
+<figcaption aria-hidden="true">alt text</figcaption>
+</figure>
 
 ## Exemplary Usage
 
