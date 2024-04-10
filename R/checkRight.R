@@ -15,14 +15,7 @@
 #' @examples
 checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05) {
 
-  checkFunction <- function() {
-    user_input <- readline("Are you sure your Tracks-Layer provides the needed conditions for this function? (y/n)")
-    if(user_input != "y") stop("Exiting since you did not press y.
-                               Please import your tracks layer with the import function 'read_tracks() to check the conditions.")
 
-  }
-
-  checkFunction()
 
   #adding tracks_id column to the tracks
   tracks$track_id <- seq.int(nrow(tracks))
@@ -124,29 +117,9 @@ checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_lengt
   centerpoints <- centerpoints %>%
     dplyr::select(!ends_with("y"))
 
-  if ("fade_scr.x" %in% colnames(centerpoints)) {
+  centerpoints_newcol <- gsub("\\.x$", "", colnames(centerpoints))
 
-    centerpoints <-  centerpoints %>%
-      dplyr::rename(
-        class_id = class_id.x,
-        line_id = line_id.x,
-        fade_scr = fade_scr.x,
-        distance = distance.x,
-        angle = angle.x,
-        track_id = track_id.x
-      )
-  }
-  else {
-    centerpoints <-  centerpoints %>%
-      dplyr::rename(
-        class_id = class_id.x,
-        line_id = line_id.x,
-        distance = distance.x,
-        angle = angle.x,
-        track_id = track_id.x
-      )
-
-  }
+  colnames(centerpoints) <- centerpoints_newcol
 
   #here i have to split the upper and down parts
   sidebuff_distance <- profile_length/2
@@ -191,21 +164,7 @@ checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_lengt
   selected_down <- slope_down_stats[slope_down_stats$slope == slope_down_stats$max,]
 
 
-  if ("fade_scr" %in% colnames(selected_down)) {
-
-    selected_down <- selected_down[,c("class_id","fade_scr","line_id","slope","max","track_id")]
-
-
     selected_down$Pointtype <- "Right"
-
-  }
-
-  else{
-    selected_down <- selected_down[,c("class_id","line_id","slope","max","track_id")]
-
-    selected_down$Pointtype <- "Right"
-  }
-
 
 
   if(isTRUE(export)) {
