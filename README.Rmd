@@ -91,7 +91,7 @@ checkMap(dsm, tracks, points = mini, morepoints = sides, export = FALSE)
 
 We have three parameters that we can adjust. This depends on your size of tracks that you want to look at.
 
-![alt text](https://github.com/geoniesun/checkRtrack/[main]/images/paramters.png?raw=true)
+![](images/parameters.png)
 
 
 ## Exemplary Usage
