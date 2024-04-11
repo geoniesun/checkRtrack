@@ -17,7 +17,7 @@
 #' @import colorspace
 #' @import ggspatial
 #' @examples
-#' tracks <- read_track(system.file("geopackage/tracks_d.gpkg", package = "checkRtrack"))
+#' tracks <- read_tracks(system.file("geopackage/tracks_d.gpkg", package = "checkRtrack"))
 #' tracks
 #'
 #'

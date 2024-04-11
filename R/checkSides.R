@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' dsm <- read_dsm(system.file("tif/dsm_small.tif", package = "checkRtrack"))
-#' tracks <- checkRtrack::tracks_d
+#' tracks <- read_tracks(system.file("geopackage/tracks_d.gpkg", package = "checkRtrack"))
 #' checkSides(dsm, tracks, export = FALSE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05)
 #'
 checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05) {
