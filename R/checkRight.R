@@ -15,7 +15,9 @@
 #' @examples
 #' dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))
 #' tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtrack"))
-#' checkRight(dsm, tracks, export = FALSE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05)
+#' right <- checkRight(dsm, tracks, export = FALSE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05)
+#' str(right)
+#' checkMap(dsm, tracks, points = right) #run checkMap() as many times as you like to get different examples
 checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05) {
 
 
@@ -170,6 +172,8 @@ checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_lengt
     selected_down$Pointtype <- "Right"
     selected_down <- na.omit(selected_down)
 
+    drop <- c("angle", "unique", "distance", "count", "range","mean", "min","sum", "max", "median", "minority", "majority", "q1", "q3", "iqr")
+    selected_down <- selected_down[,!(names(selected_down) %in% drop)]
 
   if(isTRUE(export)) {
 

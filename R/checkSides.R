@@ -15,7 +15,10 @@
 #' @examples
 #' dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))
 #' tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtrack"))
-#' checkSides(dsm, tracks, export = FALSE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05)
+#' sides <- checkSides(dsm, tracks, export = FALSE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05)
+#' str(sides)
+#'
+#' checkMap(dsm, tracks, points= sides) #run checkMap() as many times as you like to get different examples
 #'
 checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05) {
 
@@ -206,6 +209,8 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_lengt
 
     joined_points <- dplyr::bind_rows(selected_up,selected_down)
     joined_points <- na.omit(joined_points)
+    drop <- c("angle", "unique", "distance", "count", "range", "sum", "max", "mean", "median", "minority", "majority", "min", "q1", "q3", "iqr")
+    joined_points <- joined_points[,!(names(joined_points) %in% drop)]
 
 
 

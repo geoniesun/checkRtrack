@@ -18,7 +18,7 @@
 #' @import ggspatial
 #' @examples
 #' tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtrack"))
-#' tracks
+#' plot(tracks['geom'])
 #'
 #'
 read_tracks <- function(yourTracksPath) {

@@ -10,7 +10,8 @@ checkMap(
   points,
   morepoints = NULL,
   evenmorepoints = NULL,
-  export = FALSE
+  export = FALSE,
+  zoom = 4
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ checkMap(
 \item{evenmorepoints}{A Geopackage of Points that you want to plot additionally}
 
 \item{export}{If 'TRUE', the plot as png will be exported to your wd.}
+
+\item{zoom}{Zoom on your track. 4 as default.}
 }
 \description{
 An overview op of the entire tracks and points would be too messy,
@@ -32,6 +35,7 @@ so each time running this function, a random spot on your tracks will be mapped 
 The idea is to adjust the parameters used in the functions that created the points.
 }
 \examples{
+
 dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))
 tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtrack"))
 mini <- sf::st_read(system.file("geopackage/mini.gpkg", package = "checkRtrack"))

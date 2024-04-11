@@ -10,6 +10,7 @@
 #' @param morepoints A Geopackage of Points that you want to plot additionally
 #' @param evenmorepoints A Geopackage of Points that you want to plot additionally
 #' @param export If 'TRUE', the plot as png will be exported to your wd.
+#' @param zoom Zoom on your track. 4 as default.
 #'
 #' @return
 #' @export
@@ -23,13 +24,14 @@
 #' @import colorspace
 #' @import ggspatial
 #' @examples
+#'
 #' dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))
 #' tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtrack"))
 #' mini <- sf::st_read(system.file("geopackage/mini.gpkg", package = "checkRtrack"))
 #' sides <- sf::st_read(system.file("geopackage/sides.gpkg", package = "checkRtrack"))
 #' checkMap(dsm, tracks, points = mini, morepoints = sides)
 #'
-checkMap <- function(dsm, tracks, points, morepoints=NULL,evenmorepoints =NULL, export = FALSE) {
+checkMap <- function(dsm, tracks, points, morepoints=NULL,evenmorepoints =NULL, export = FALSE, zoom = 4) {
 
 
 
@@ -45,7 +47,7 @@ checkMap <- function(dsm, tracks, points, morepoints=NULL,evenmorepoints =NULL, 
 
   #randompoint <- sample(minimumpoints, size= 1)
 
-  buffer <- st_buffer(randompoint, 2, enCapStyle = "SQUARE")
+  buffer <- st_buffer(randompoint, zoom, enCapStyle = "SQUARE")
 
 
   # Step 3: Filter your data to a smaller area around the random coordinates

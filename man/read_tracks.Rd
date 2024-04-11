@@ -16,7 +16,7 @@ For a better workflow use function as "tracks <- read_track(yourTracksPath)"
 }
 \examples{
 tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtrack"))
-tracks
+plot(tracks['geom'])
 
 
 }
