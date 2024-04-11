@@ -131,6 +131,7 @@ checkMin <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length 
   selected <- pointsandstats[pointsandstats$z == pointsandstats$min,]
   selected <- selected[selected$stddev > st_dev,]
   selected$Pointtype <- "Minimum"
+  selected <- na.omit(selected)
 
 
 

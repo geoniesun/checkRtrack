@@ -205,6 +205,7 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_lengt
     selected_down$Pointtype <- "Right"
 
     joined_points <- dplyr::bind_rows(selected_up,selected_down)
+    joined_points <- na.omit(joined_points)
 
 
 

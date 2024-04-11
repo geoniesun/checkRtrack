@@ -168,7 +168,7 @@ checkLeft <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length
   selected_up <- slope_up_stats[slope_up_stats$slope == slope_up_stats$max,]
 
     selected_up$Pointtype <- "Left"
-
+    selected_up <- na.omit(selected_up)
 
 
 

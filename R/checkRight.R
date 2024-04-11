@@ -168,6 +168,7 @@ checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_lengt
 
 
     selected_down$Pointtype <- "Right"
+    selected_down <- na.omit(selected_down)
 
 
   if(isTRUE(export)) {
