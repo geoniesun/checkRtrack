@@ -89,24 +89,25 @@ checkMap(dsm, tracks, points = mini, morepoints = sides, export = FALSE)
 
 ## What are these parameters for?
 
-We have three parameters that we can adjust. This depends on your size of tracks that you want to look at.
+We have four parameters that we can adjust. They all are related to the crossprofiles that are used to determine the widths. The first three are demonstrated here on this crossprofile example:
 
 ![](images/parameters.png)
 
+With the standarddeviation (st_dev) you can filter the paths (if there is almost no slope, no width will be possible to be calculated with this approach).
+Well, the higher the density of your crossprofiles and points, the better the results. 
+The goal in future is, making the results independent of the profile length. 
+For more understanding, here an overview of what is meant by the "points" that we create with the functions. 
 
-## Exemplary Usage
+![](images/tracks.jpg)
 
 
 
-```{r example}
-#library(checkRtrack)
-## basic example code
-```
 
 ## Roadmap
-- [ ]  Fix bug: when fade_scr not included, plot looks wrong
+- [x]  Fix bug: when fade_scr not included, plot looks wrong
+- [ ]  Create growing approach for width determination
 - [ ]  Visualize the crossprofiles from the side. To see if there is actually a path
-- [ ]  Take out the fade score as necessary column
+- [x]  Take out the fade score as necessary column
 - [ ]  Set more filter that determine a path
 - [ ]  Create more options to modify the users definition of the "path end" (for now its the steepest slope point)
 

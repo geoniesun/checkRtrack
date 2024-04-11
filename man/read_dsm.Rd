@@ -17,6 +17,6 @@ For better workflow use function as "dsm <- read_dsm(yourDSMpath)"
 }
 \examples{
 dsm <- read_dsm(system.file("tif/dsm_small.tif", package = "checkRtrack"))
-
+dsm
 
 }

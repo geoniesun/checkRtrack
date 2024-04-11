@@ -17,7 +17,7 @@
 #' @import ggspatial
 #' @examples
 #' dsm <- read_dsm(system.file("tif/dsm_small.tif", package = "checkRtrack"))
-#'
+#' dsm
 #'
 read_dsm <- function(yourDSMpath) {
 

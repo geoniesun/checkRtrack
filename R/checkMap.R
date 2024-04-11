@@ -23,6 +23,12 @@
 #' @import colorspace
 #' @import ggspatial
 #' @examples
+#' dsm <- read_dsm(system.file("tif/dsm_small.tif", package = "checkRtrack"))
+#' tracks <- read_tracks(system.file("geopackage/tracks_c.gpkg", package = "checkRtrack"))
+#' mini <- checkMin(dsm, tracks, export = FALSE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0)
+#' sides <- checkSides(dsm, tracks, export = FALSE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05)
+#' checkMap(dsm, tracks, points = mini, morepoints = sides)
+#'
 checkMap <- function(dsm, tracks, points, morepoints=NULL,evenmorepoints =NULL, export = FALSE) {
 
 

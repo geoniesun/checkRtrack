@@ -14,6 +14,10 @@
 #'
 
 #' @examples
+#' dsm <- read_dsm(system.file("tif/dsm_small.tif", package = "checkRtrack"))
+#' tracks <- checkRtrack::tracks_c
+#' checkLeft(dsm, tracks, export = FALSE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05)
+#'
 checkLeft <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05) {
 
 

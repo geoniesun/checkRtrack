@@ -4,8 +4,15 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Leonie", "Sonntag", , "leonie.sonntag@stud-mail.uni-wuerzburg.de", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: For now, you can define the lowest points along your track,the side limits of the path and then map your progress. You need digitized tracks and a Digital Surface Model. The idea is to be able to individually set your parameters that fit your AOI and to then identify the track widths. It is created for the course "Introduction to Programming with R". 
+Description: For now, you can define the lowest points along your track,
+            the side limits of the path and then map your progress. 
+            You need digitized tracks and a Digital Surface Model. 
+            The idea is to be able to individually set your parameters that
+            fit your AOI and to then identify the track widths. 
+            It is created for the course "Introduction to Programming with R". 
 License: MIT + file LICENSE
+URL: https://github.com/geoniesun/checkRtrack/tree/main
+BugRepors: https://github.com/geoniesun/checkRtrack/issues
 Encoding: UTF-8
 Language: de
 Roxygen: list(markdown = TRUE)
@@ -24,6 +31,15 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 
-    R (>= 2.10)
+    R (>= 2.10),
+    ggplot2,
+    sf,
+    terra,
+    qgisprocess,
+    dplyr,
+    ggnewscale,
+    tidyterra,
+    colorspace,
+    ggspatial
 LazyData: true
 

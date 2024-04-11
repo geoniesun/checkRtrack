@@ -18,6 +18,9 @@
 #' @export
 #'
 #' @examples
+#' dsm <- read_dsm(system.file("tif/dsm_small.tif", package = "checkRtrack"))
+#' tracks <- checkRtrack::tracks
+#' checkMin(dsm, tracks, export = FALSE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0)
 #'
 
 checkMin <- function(dsm, tracks, export = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06) {
