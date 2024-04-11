@@ -31,6 +31,6 @@ Can save a GeoPackage and return a sf object of right side points
 }
 \examples{
 dsm <- read_dsm(system.file("tif/dsm_small.tif", package = "checkRtrack"))
-tracks <- checkRtrack::tracks_c
+tracks <- checkRtrack::tracks_d
 checkRight(dsm, tracks, export = FALSE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05)
 }

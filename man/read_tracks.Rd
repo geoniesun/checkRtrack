@@ -15,7 +15,7 @@ This step is highly recommended before using the other functions.
 For a better workflow use function as "tracks <- read_track(yourTracksPath)"
 }
 \examples{
-tracks <- read_track(system.file("geopackage/tracks_c.gpkg", package = "checkRtrack"))
+tracks <- read_track(system.file("geopackage/tracks_d.gpkg", package = "checkRtrack"))
 tracks
 
 
