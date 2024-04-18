@@ -38,10 +38,12 @@ DSM:
 ``` r
 #load tracks 
 tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtrack"))
-#> The next step will be easier if you named the output as 'tracks' ('tracks <- read_track(yourpath)'). If you did already, great!
+#> The next step will be easier if you named the output as 'tracks'
+#>                 ('tracks <- read_track(yourpath)'). If you did already, great!
 #load dsm
 dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))
-#> Next step will be easier if you named the output as 'dsm' ('dsm <- read_dsm(yourDSMpath)'). If you did already, great!
+#> Next step will be easier if you named the output as 'dsm'
+#>             ('dsm <- read_dsm(yourDSMpath)'). If you did already, great!
 ```
 
 For now, it’s always best to start with generating the minimumpoints.
@@ -61,10 +63,10 @@ line as many times as you want, to have a look on different areas:
 
 ``` r
 #creating a random zoom plot of the minimumpoints
-checkMap(dsm, tracks, points = mini, export = FALSE)
+checkMap(dsm, tracks, points = mini, export = FALSE, zoom = 3)
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+![](images/example5mz3.png)
 
 Now let’s see for the sides. You can go immediately for both sides with
 ‘checkSides()’ or look on each one with ‘checkRight()’ or ‘checkLeft()’.
@@ -79,10 +81,10 @@ Let’s check again the map:
 
 ``` r
 #plot random map of minimum and side points
-checkMap(dsm, tracks, points = mini, morepoints = sides, export = FALSE)
+checkMap(dsm, tracks, points = mini, morepoints = sides, export = FALSE, zoom = 3)
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+![](images/example2lrmzoom3.png)
 
 Render the checkMap-function as many times as you want… each time will
 be chosen a random spot on your map.

@@ -57,10 +57,11 @@ mini <- checkMin(dsm, tracks, export = FALSE, dist_cross = 1, profile_length = 1
 
 Let's have a first look on our minimumpoints. As the entire dataset with all points would be too messy for a quick Map, you will always get a random spot on your tracks that you can have a look on. So just run the line as many times as you want, to have a look on different areas:
 
-``` {r warning=FALSE, message=FALSE}
+``` {r warning=FALSE, message=FALSE, fig.show='hide'}
 #creating a random zoom plot of the minimumpoints
-checkMap(dsm, tracks, points = mini, export = FALSE)
+checkMap(dsm, tracks, points = mini, export = FALSE, zoom = 3)
 ``` 
+![](images/example5mz3.png)
 
 Now let's see for the sides. You can go immediately for both sides with 'checkSides()' or look on each one with 'checkRight()' or 'checkLeft()'. For now we go with both:
 
@@ -72,10 +73,11 @@ sides <- checkSides(dsm, tracks, export = FALSE, dist_cross = 1, profile_length 
 
 Let's check again the map:
 
-``` {r warning=FALSE, message=FALSE}
+``` {r warning=FALSE, message=FALSE,fig.show='hide'}
 #plot random map of minimum and side points
-checkMap(dsm, tracks, points = mini, morepoints = sides, export = FALSE)
+checkMap(dsm, tracks, points = mini, morepoints = sides, export = FALSE, zoom = 3)
 ``` 
+![](images/example2lrmzoom3.png)
 
 Render the checkMap-function as many times as you want... each time will be chosen a random spot on your map.
 
