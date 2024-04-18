@@ -28,7 +28,7 @@ The goal is later, to create the mean width for each track segment.
 
 ## Installation
 
-``` {r message=FALSE, warning=FALSE, results="hide" }
+``` {r message=FALSE, warning=FALSE, results='hide'}
 # install.packages("devtools")
 devtools::install_github("geoniesun/checkRtrack")
 

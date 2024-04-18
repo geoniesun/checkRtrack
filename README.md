@@ -25,43 +25,6 @@ The goal is later, to create the mean width for each track segment.
 ``` r
 # install.packages("devtools")
 devtools::install_github("geoniesun/checkRtrack")
-#> stringi  (1.8.2  -> 1.8.3 ) [CRAN]
-#> vctrs    (0.6.4  -> 0.6.5 ) [CRAN]
-#> rlang    (1.1.1  -> 1.1.3 ) [CRAN]
-#> glue     (1.6.2  -> 1.7.0 ) [CRAN]
-#> cli      (3.6.1  -> 3.6.2 ) [CRAN]
-#> curl     (5.1.0  -> 5.2.1 ) [CRAN]
-#> Rcpp     (1.0.11 -> 1.0.12) [CRAN]
-#> ps       (1.7.5  -> 1.7.6 ) [CRAN]
-#> processx (3.8.2  -> 3.8.4 ) [CRAN]
-#> package 'stringi' successfully unpacked and MD5 sums checked
-#> package 'vctrs' successfully unpacked and MD5 sums checked
-#> package 'rlang' successfully unpacked and MD5 sums checked
-#> package 'glue' successfully unpacked and MD5 sums checked
-#> package 'cli' successfully unpacked and MD5 sums checked
-#> package 'curl' successfully unpacked and MD5 sums checked
-#> package 'Rcpp' successfully unpacked and MD5 sums checked
-#> package 'ps' successfully unpacked and MD5 sums checked
-#> package 'processx' successfully unpacked and MD5 sums checked
-#> 
-#> The downloaded binary packages are in
-#>  C:\Users\Leonie Sonntag\AppData\Local\Temp\Rtmp08BvNg\downloaded_packages
-#> ── R CMD build ─────────────────────────────────────────────────────────────────
-#>          checking for file 'C:\Users\Leonie Sonntag\AppData\Local\Temp\Rtmp08BvNg\remotes1ff076ee248\geoniesun-checkRtrack-2ce3cac/DESCRIPTION' ...     checking for file 'C:\Users\Leonie Sonntag\AppData\Local\Temp\Rtmp08BvNg\remotes1ff076ee248\geoniesun-checkRtrack-2ce3cac/DESCRIPTION' ...   ✔  checking for file 'C:\Users\Leonie Sonntag\AppData\Local\Temp\Rtmp08BvNg\remotes1ff076ee248\geoniesun-checkRtrack-2ce3cac/DESCRIPTION' (859ms)
-#>       ─  preparing 'checkRtrack': (627ms)
-#>    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   ✔  checking DESCRIPTION meta-information
-#>       ─  checking for LF line-endings in source and make files and shell scripts (336ms)
-#>   ─  checking for empty or unneeded directories
-#>      NB: this package now depends on R (>=        NB: this package now depends on R (>= 3.5.0)
-#>        WARNING: Added dependency on R >= 3.5.0 because serialized objects in
-#>      serialize/load version 3 cannot be read in older versions of R.
-#>      File(s) containing such objects:
-#>        'checkRtrack/data/mini.rda' 'checkRtrack/data/sides.rda'
-#>        'checkRtrack/data/tracks.rda' 'checkRtrack/inst/geopackage/mini.rda'
-#>      'checkRtrack/inst/geopackage/sides.rda'         'checkRtrack/inst/geopackage/sides.rda'
-#> ─  building 'checkRtrack_0.0.0.9000.tar.gz'
-#>      
-#> 
 
 # and load it 
 library(checkRtrack)
