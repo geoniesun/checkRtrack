@@ -4,31 +4,27 @@
 #'
 #' @param yourDSMpath Your path to your GEOTIFF file (.tif)
 #'
-#' @return the imported dsm file
+#' @return the imported dsm file as terra object
 #' @export
-#' @import ggplot2
-#' @import sf
-#' @import terra
-#' @import qgisprocess
-#' @import dplyr
-#' @import ggnewscale
-#' @import tidyterra
-#' @import colorspace
-#' @import ggspatial
 #' @examples
 #' dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))
 #' plot(dsm)
 #'
 read_dsm <- function(yourDSMpath) {
 
-  if(!file.exists(yourDSMpath)) stop("DSM file does not exist. The file you tried to import: ", yourDSMpath, call = FALSE)
+  if(!file.exists(yourDSMpath)) stop("DSM file does not exist.
+                                     The file you tried to import: ",
+                                     yourDSMpath, call = FALSE)
+
   #TASK: converting to tif to be included here
-  if(!grep("tif", yourDSMpath)) stop("Your chosen DSM file is not in GEOTIFF format and must be convertet first")
+  if(!grep("tif", yourDSMpath)) stop("Your chosen DSM file is not in GEOTIFF
+                                     format and must be convertet first")
 
   format <- if(grepl("tif", yourDSMpath)) "TIFF"
 
   if(format == "TIFF") {
-    message("Next step will be easier if you named the output as 'dsm' ('dsm <- read_dsm(yourDSMpath)'). If you did already, great!")
+    message("Next step will be easier if you named the output as 'dsm'
+            ('dsm <- read_dsm(yourDSMpath)'). If you did already, great!")
 
     dsm <- terra::rast(yourDSMpath)
 
