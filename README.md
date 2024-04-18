@@ -34,33 +34,32 @@ devtools::install_github("geoniesun/checkRtrack")
 #> Rcpp     (1.0.11 -> 1.0.12) [CRAN]
 #> ps       (1.7.5  -> 1.7.6 ) [CRAN]
 #> processx (3.8.2  -> 3.8.4 ) [CRAN]
-#> Error in download.file(url, destfile, method, mode = "wb", ...) : 
-#>   cannot open URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/glue_1.7.0.zip'
-#> Error in download.file(url, destfile, method, mode = "wb", ...) : 
-#>   cannot open URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/ps_1.7.6.zip'
 #> package 'stringi' successfully unpacked and MD5 sums checked
 #> package 'vctrs' successfully unpacked and MD5 sums checked
 #> package 'rlang' successfully unpacked and MD5 sums checked
+#> package 'glue' successfully unpacked and MD5 sums checked
 #> package 'cli' successfully unpacked and MD5 sums checked
 #> package 'curl' successfully unpacked and MD5 sums checked
 #> package 'Rcpp' successfully unpacked and MD5 sums checked
+#> package 'ps' successfully unpacked and MD5 sums checked
 #> package 'processx' successfully unpacked and MD5 sums checked
 #> 
 #> The downloaded binary packages are in
-#>  C:\Users\Leonie Sonntag\AppData\Local\Temp\Rtmp6tMml4\downloaded_packages
+#>  C:\Users\Leonie Sonntag\AppData\Local\Temp\Rtmp08BvNg\downloaded_packages
 #> ── R CMD build ─────────────────────────────────────────────────────────────────
-#>          checking for file 'C:\Users\Leonie Sonntag\AppData\Local\Temp\Rtmp6tMml4\remotes417c2519356a\geoniesun-checkRtrack-ae0f642/DESCRIPTION' ...     checking for file 'C:\Users\Leonie Sonntag\AppData\Local\Temp\Rtmp6tMml4\remotes417c2519356a\geoniesun-checkRtrack-ae0f642/DESCRIPTION' ...   ✔  checking for file 'C:\Users\Leonie Sonntag\AppData\Local\Temp\Rtmp6tMml4\remotes417c2519356a\geoniesun-checkRtrack-ae0f642/DESCRIPTION' (713ms)
-#>       ─  preparing 'checkRtrack': (421ms)
+#>          checking for file 'C:\Users\Leonie Sonntag\AppData\Local\Temp\Rtmp08BvNg\remotes1ff076ee248\geoniesun-checkRtrack-2ce3cac/DESCRIPTION' ...     checking for file 'C:\Users\Leonie Sonntag\AppData\Local\Temp\Rtmp08BvNg\remotes1ff076ee248\geoniesun-checkRtrack-2ce3cac/DESCRIPTION' ...   ✔  checking for file 'C:\Users\Leonie Sonntag\AppData\Local\Temp\Rtmp08BvNg\remotes1ff076ee248\geoniesun-checkRtrack-2ce3cac/DESCRIPTION' (859ms)
+#>       ─  preparing 'checkRtrack': (627ms)
 #>    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   ✔  checking DESCRIPTION meta-information
-#>       ─  checking for LF line-endings in source and make files and shell scripts
+#>       ─  checking for LF line-endings in source and make files and shell scripts (336ms)
 #>   ─  checking for empty or unneeded directories
 #>      NB: this package now depends on R (>=        NB: this package now depends on R (>= 3.5.0)
 #>        WARNING: Added dependency on R >= 3.5.0 because serialized objects in
 #>      serialize/load version 3 cannot be read in older versions of R.
 #>      File(s) containing such objects:
+#>        'checkRtrack/data/mini.rda' 'checkRtrack/data/sides.rda'
 #>        'checkRtrack/data/tracks.rda' 'checkRtrack/inst/geopackage/mini.rda'
-#>        'checkRtrack/inst/geopackage/sides.rda'
-#>   ─  building 'checkRtrack_0.0.0.9000.tar.gz'
+#>      'checkRtrack/inst/geopackage/sides.rda'         'checkRtrack/inst/geopackage/sides.rda'
+#> ─  building 'checkRtrack_0.0.0.9000.tar.gz'
 #>      
 #> 
 
