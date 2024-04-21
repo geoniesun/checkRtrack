@@ -2,7 +2,7 @@
 
 #' Generates the average width of the tracks.
 #'
-#' It is recommended to use the other check-functions first.
+#' It is recommended to use the other check-functions first. You can plot and export your track widths. The width is defined here as the distance of the steepest points from each side of the track calculated with cross profiles.
 #'
 #' @param dsm Digital Surface Model raster file as '.tif'.
 #' @param tracks Digitized tracks as GeoPackage '.gpkg'.
@@ -13,14 +13,14 @@
 #' @param dist_cross_points Distance of the points on the crossprofile in meter. Defaults to '0.05'.
 #' @param st_dev Minimum standarddeviation of crossprofile dsm-value 'z'. Acts as a filter. Defaults to '0.06'.
 #'
-#' @return The width information in meters added to the imported tracks object and a plot.
+#' @return The width information in meters added to the imported tracks objects attribute table and a plot
 #' of the width vs. the track type (labelled).
 #' @export
 #'
 #' @examples
 #' dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))
 #' tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtrack"))
-#' width <- checkWidth(ddsm , tracks, export = FALSE, plot = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06)
+#' width <- checkWidth(dsm , tracks, export = FALSE, plot = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06)
 #' width
 #'
 

@@ -18,12 +18,13 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-R package to define track widths. It is created for the course "Introduction to Programming with R" and for my HiWi. 
-For now, you can define the lowest points along your track to then define the outer limits of the tracks and visualize your progress. 
-The main idea is, that you have digitized (animal)-tracks and a (high resolution) Digital Surface Model (DSM). 
-The animals stamping out the grassland could make the width of the path visible with the DSM. The width is defined as the steepest point on each side of the path. With parameters you can adjust your calculations of the width and then always visualize it to check out what is going on. To understand the parameters, please see this [ section 'what are these parameters for?'](#what-are-these-parameters-for?).
+R package to define track widths by using crossprofiles. It is created for the course "Introduction to Programming with R" and for my HiWi. 
 
-The goal is later, to create the mean width for each track segment. 
+The main idea is, that you have digitized (animal)-tracks and a (high resolution) Digital Surface Model (DSM). The animals stamping out the grassland could make the width of the path visible in the DSM. The width is defined as the steepest point on each side of the path.
+
+You can directly calculate by defaults the width of your tracks. But it is highly recommended to use the other "check"-functions to see if the default parameters work for your type of track or if you need to adjust these and to get an idea of the quality of the digitization. To understand the parameters, please see this [ section 'what are these parameters for?'](#what-are-these-parameters-for?). With these check-functions you can quickly visualize random example spots on your AOI to get an idea of what is going on. You can also export the GeoPackage to have a closer look on it on a GIS software. 
+
+
 
 
 ## Installation
@@ -81,15 +82,26 @@ checkMap(dsm, tracks, points = mini, morepoints = sides, export = FALSE, zoom = 
 
 Render the checkMap-function as many times as you want... each time will be chosen a random spot on your map.
 
+After checking the tracks we can check the width of the tracks. You will get a sf object returned, which is your input tracks-geopackage with an additional width column. To see for possible digitizing errors you can also plot the map.
+
+``` {r warning=FALSE, message=FALSE,fig.show='hide', results='hide'}
+# finally, calculate the mean track width of each segment
+checkWidth(dsm , tracks, export = FALSE, plot = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06)
+``` 
+
+![](images/width_vs_type.png)
+
+
+
 ---
 
 ## What are these parameters for?
 
-We have four parameters that we can adjust. They all are related to the crossprofiles that are used to determine the widths. The first three are demonstrated here on this crossprofile example:
+We have four parameters that we can adjust. They all are related to the cross profiles that are used to determine the widths. Using the check-functions (except the checkWidth) you can look if e.g. your cross profile length is way too small/big. The first three parameters are demonstrated here on this crossprofile example:
 
 ![](images/parameters.png)
 
-With the standarddeviation (st_dev) you can filter the paths (if there is almost no slope, no width will be possible to be calculated with this approach).
+With the standarddeviation (st_dev) you can filter the paths (if there is almost no slope, no width will be possible to be calculated with this approach). important: you need to always visualize along with minimumpoints to be able to see the filtered side extent points. 
 Well, the higher the density of your crossprofiles and points, the better the results. 
 The goal in future is, making the results independent of the profile length. 
 For more understanding, here an overview of what is meant by the "points" that we create with the functions. 
@@ -98,15 +110,17 @@ For more understanding, here an overview of what is meant by the "points" that w
 
 
 
-## Roadmap
-- [x]  Fix bug: when fade_scr not included, plot looks wrong
+## Tasks
+- [x]  Fix: when fade_scr not included, plot looks wrong
 - [ ]  Make other vector/raster objects to import possible
 - [ ]  Create growing approach for width determination
-- [ ]  Visualize the crossprofiles from the side. To see if there is actually a path
+- [ ]  Visualize the cross profiles from the side. To see if there is actually a path
 - [x]  Take out the fade score as necessary column
 - [x]  Generalize all columns
 - [ ]  Set more filter that determine a path
 - [ ]  Create more options to modify the users definition of the "path end" (for now its the steepest slope point)
+- [x]  Calulate finally the mean width 
+- [ ]  Make aesthetics better... 
 
 
 ## Data sources
@@ -115,3 +129,6 @@ Digital Surface Model (DSM) used as example:
 
 Geopackage data used as example:
 © University of Würzburg (digitized by Leonie Sophie Sonntag)
+
+Welcome ascii font:
+© Glenn Chappell, 1993
