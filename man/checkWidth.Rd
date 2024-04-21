@@ -40,6 +40,9 @@ of the width vs. the track type (labelled).
 It is recommended to use the other check-functions first. You can plot and export your track widths. The width is defined here as the distance of the steepest points from each side of the track calculated with cross profiles.
 }
 \examples{
+#better look into the README instead of running it here
+# https://github.com/geoniesun/checkRtrack/tree/main?tab=readme-ov-file#example-work-flow
+#! loads quite a bit. Only a very small piece of the tif is available for an example
 dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))
 tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtrack"))
 width <- checkWidth(dsm , tracks, export = FALSE, plot = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06)
