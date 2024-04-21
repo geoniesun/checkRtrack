@@ -15,14 +15,17 @@ knitr::opts_chunk$set(
 
 # checkRtrack
 
-<!-- badges: start -->
-<!-- badges: end -->
+<img alt="" src=https://img.shields.io/badge/first-check_for_a_snack-yellow>
+<img alt="" src=https://img.shields.io/badge/in_your-backpack-yellow>
+<img alt="" src=https://img.shields.io/badge/to-check_R_track-green>
+<img alt="" src=https://img.shields.io/badge/with-a_happy_stomach-yellow>
+
 
 R package to define track widths by using crossprofiles. It is created for the course "Introduction to Programming with R" and for my HiWi. 
 
-The main idea is, that you have digitized (animal)-tracks and a (high resolution) Digital Surface Model (DSM). The animals stamping out the grassland could make the width of the path visible in the DSM. The width is defined as the steepest point on each side of the path.
+The main idea is, that you have digitized (animal)-tracks and a (high resolution) Digital Surface Model (DSM). The animals stamping out the grassland could make the width of the path visible in the DSM. The width is defined as the distance between the steepest points on each side of the path.
 
-You can directly calculate by defaults the width of your tracks. But it is highly recommended to use the other "check"-functions to see if the default parameters work for your type of track or if you need to adjust these and to get an idea of the quality of the digitization. To understand the parameters, please see this [ section 'what are these parameters for?'](#what-are-these-parameters-for?). With these check-functions you can quickly visualize random example spots on your AOI to get an idea of what is going on. You can also export the GeoPackage to have a closer look on it on a GIS software. 
+You can directly calculate by defaults the width of your tracks. But it is highly recommended to use the other "check"-functions to see if the default parameters work for your type of track or if you need to adjust these and to get an idea of the quality of the digitization. To understand the parameters, please see this [ section 'what are these parameters for?'](https://github.com/geoniesun/checkRtrack?tab=readme-ov-file#what-are-these-parameters-for). With these check-functions you can quickly visualize random example spots on your AOI to get an idea of what is going on. You can also export the GeoPackage to have a closer look on it on a GIS software. 
 
 
 
@@ -48,7 +51,7 @@ tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtra
 dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))
 ``` 
 
-For now, it's always best to start with generating the minimumpoints. (Check the setting of the parameters under [the section 'what are these parameters for?'](#what-are-these-parameters-for?)). You can also export the GeoPackage and work on it in QGIS or similar:
+For now, it's always best to start with generating the minimumpoints. (Check the setting of the parameters under [the section 'what are these parameters for?'](https://github.com/geoniesun/checkRtrack?tab=readme-ov-file#what-are-these-parameters-for)). You can also export the GeoPackage and work on it in QGIS or similar:
 
 
 ``` {r warning=FALSE, message=FALSE}
@@ -111,7 +114,7 @@ For more understanding, here an overview of what is meant by the "points" that w
 
 
 ## Tasks
-- [x]  Fix: when fade_scr not included, plot looks wrong
+
 - [ ]  Make other vector/raster objects to import possible
 - [ ]  Create growing approach for width determination
 - [ ]  Visualize the cross profiles from the side. To see if there is actually a path
@@ -119,6 +122,7 @@ For more understanding, here an overview of what is meant by the "points" that w
 - [x]  Generalize all columns
 - [ ]  Set more filter that determine a path
 - [ ]  Create more options to modify the users definition of the "path end" (for now its the steepest slope point)
+- [x]  Fix: when fade_scr not included, plot looks wrong
 - [x]  Calulate finally the mean width 
 - [ ]  Make aesthetics better... 
 
