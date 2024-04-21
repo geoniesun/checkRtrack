@@ -3,10 +3,10 @@
 
 # checkRtrack
 
-<img alt="" src=https://img.shields.io/badge/first-check_for_a_snack-yellow>
-<img alt="" src=https://img.shields.io/badge/in_your-backpack-yellow>
-<img alt="" src=https://img.shields.io/badge/to-check_R_track-green>
-<img alt="" src=https://img.shields.io/badge/with-a_happy_stomach-yellow>
+<img alt="" src="https://img.shields.io/badge/first-check_for_a_snack-yellow">
+<img alt="" src="https://img.shields.io/badge/in_your-backpack-yellow">
+<img alt="" src="https://img.shields.io/badge/to-check_R_track-purple">
+<img alt="" src="https://img.shields.io/badge/with-a_happy_stomach-yellow">
 
 R package to define track widths by using crossprofiles. It is created
 for the course “Introduction to Programming with R” and for my HiWi.
