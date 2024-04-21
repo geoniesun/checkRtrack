@@ -1,4 +1,4 @@
-#' Creates an overview map of a random scene of the data to check the results.
+#' Creates an overview map of a random scene of the data to check the results and general quality of digitization.
 #'
 #' An overview op of the entire tracks and points would be too messy,
 #' so each time running this function, a random spot on your tracks will be
@@ -7,10 +7,10 @@
 #'  points.
 #'
 #' @param dsm Digital Surface Model raster file as '.tif'.
-#' @param tracks Digital Surface Model raster file as '.tif'.
-#' @param points A Geopackage of Points that you want to plot
-#' @param morepoints A Geopackage of Points that you want to plot additionally
-#' @param evenmorepoints A Geopackage of Points that you want to plot additionally
+#' @param tracks Digitized tracks as GeoPackage '.gpkg'.
+#' @param points A Geopackage of Points that you want to plot.
+#' @param morepoints A Geopackage of Points that you want to plot additionally.
+#' @param evenmorepoints A Geopackage of Points that you want to plot additionally.
 #' @param export If 'TRUE', the plot as png will be exported to your wd.
 #' @param zoom Zoom on your track. 3 as default.
 #'
@@ -103,10 +103,10 @@ checkMap <- function(dsm, tracks, points, morepoints=NULL,evenmorepoints =NULL,
                                    show.limits =F,
                                    even.steps = T,
                                    reverse = F)) +
-    labs(fill = "m", title = "This is going on in your process..") +
+    labs(fill = "Elevation [m]", title = "This is going on in your process..") +
     theme(legend.position = "right") +
     geom_sf(data=lines_subset, show.legend = FALSE) +                           # tracks
-    theme(
+    theme(   #for an overview i decided to not put coordinates
      axis.title.x = element_blank(),
       axis.text.x = element_blank(),
       axis.ticks.x = element_blank(),

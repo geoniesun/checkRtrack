@@ -10,7 +10,7 @@ read_dsm(yourDSMpath)
 \item{yourDSMpath}{Your path to your GEOTIFF file (.tif)}
 }
 \value{
-the imported dsm file
+the imported dsm file as terra object
 }
 \description{
 For better workflow use function as "dsm <- read_dsm(yourDSMpath)"

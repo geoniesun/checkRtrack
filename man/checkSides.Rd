@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkSides.R
 \name{checkSides}
 \alias{checkSides}
-\title{Generates the track limit on the right and left side of the track}
+\title{Generates the track limit on the right and left side of the track.}
 \usage{
 checkSides(
   dsm,
@@ -16,7 +16,7 @@ checkSides(
 \arguments{
 \item{dsm}{Digital Surface Model raster file as '.tif'.}
 
-\item{tracks}{Digital Surface Model raster file as '.tif'.}
+\item{tracks}{Digitized tracks as GeoPackage '.gpkg'.}
 
 \item{export}{If 'TRUE' the GeoPackage will be exported to your wd.}
 
@@ -26,8 +26,12 @@ checkSides(
 
 \item{dist_cross_points}{Distance of the points on the crossprofile in meter. Defaults to '0.05'.}
 }
+\value{
+Points along both sides of the track representing the outer
+extent of the track.
+}
 \description{
-Can save a GeoPackage and return a sf object of right and left side points
+Can save a GeoPackage and return a sf object of right and left side points.
 }
 \examples{
 dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))
@@ -36,5 +40,5 @@ sides <- checkSides(dsm, tracks, export = FALSE, dist_cross = 1, profile_length 
 str(sides)
 
 checkMap(dsm, tracks, points= sides) #run checkMap() as many times as you like to get different examples
-
+# run checkMap() as many times as you like to get different examples
 }

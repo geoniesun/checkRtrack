@@ -28,6 +28,7 @@ read_dsm <- function(yourDSMpath) {
 
     dsm <- terra::rast(yourDSMpath)
 
+
   }
 
 

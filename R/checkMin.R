@@ -1,11 +1,11 @@
 
-#' Generates the lowest points along the paths
+#' Generates the lowest points along the paths.
 #'
 #' Can save a GeoPackage and return a sf object of minimumpoints.
 #'
 #'
 #' @param dsm Digital Surface Model raster file as '.tif'.
-#' @param tracks Digital Surface Model raster file as '.tif'.
+#' @param tracks Digitized tracks as GeoPackage '.gpkg'.
 #' @param export If 'TRUE' the GeoPackage will be exported to your wd.
 #' @param dist_cross Distance between each crossprofile in meter. Defaults to '1'.
 #' @param profile_length Length of the crossprofile in meter. Defaults to '1'.

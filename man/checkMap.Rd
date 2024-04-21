@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkMap.R
 \name{checkMap}
 \alias{checkMap}
-\title{Creates an overview map of a random scene of the data to check the results.}
+\title{Creates an overview map of a random scene of the data to check the results and general quality of digitization.}
 \usage{
 checkMap(
   dsm,
@@ -11,28 +11,33 @@ checkMap(
   morepoints = NULL,
   evenmorepoints = NULL,
   export = FALSE,
-  zoom = 4
+  zoom = 3
 )
 }
 \arguments{
 \item{dsm}{Digital Surface Model raster file as '.tif'.}
 
-\item{tracks}{Digital Surface Model raster file as '.tif'.}
+\item{tracks}{Digitized tracks as GeoPackage '.gpkg'.}
 
-\item{points}{A Geopackage of Points that you want to plot}
+\item{points}{A Geopackage of Points that you want to plot.}
 
-\item{morepoints}{A Geopackage of Points that you want to plot additionally}
+\item{morepoints}{A Geopackage of Points that you want to plot additionally.}
 
-\item{evenmorepoints}{A Geopackage of Points that you want to plot additionally}
+\item{evenmorepoints}{A Geopackage of Points that you want to plot additionally.}
 
 \item{export}{If 'TRUE', the plot as png will be exported to your wd.}
 
-\item{zoom}{Zoom on your track. 4 as default.}
+\item{zoom}{Zoom on your track. 3 as default.}
+}
+\value{
+A Map of a random spot in your AOI showing the process of your points.
 }
 \description{
 An overview op of the entire tracks and points would be too messy,
-so each time running this function, a random spot on your tracks will be mapped to see how it worked out (so zooming in).
-The idea is to adjust the parameters used in the functions that created the points.
+so each time running this function, a random spot on your tracks will be
+mapped to see how it worked out (so zooming in).
+The idea is to adjust the parameters used in the functions that created the
+points.
 }
 \examples{
 
@@ -41,5 +46,6 @@ tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtra
 mini <- sf::st_read(system.file("geopackage/mini.gpkg", package = "checkRtrack"))
 sides <- sf::st_read(system.file("geopackage/sides.gpkg", package = "checkRtrack"))
 checkMap(dsm, tracks, points = mini, morepoints = sides)
+# run checkMap() as many times as you like to get different examples
 
 }

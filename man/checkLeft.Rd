@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkLeft.R
 \name{checkLeft}
 \alias{checkLeft}
-\title{Generates the track limit on the left side of the track}
+\title{Generates the track limit on the left side of the track.}
 \usage{
 checkLeft(
   dsm,
@@ -16,7 +16,7 @@ checkLeft(
 \arguments{
 \item{dsm}{Digital Surface Model raster file as '.tif'.}
 
-\item{tracks}{Digital Surface Model raster file as '.tif'.}
+\item{tracks}{Digitized tracks as GeoPackage '.gpkg'.}
 
 \item{export}{If 'TRUE' the GeoPackage will be exported to your wd.}
 
@@ -26,14 +26,19 @@ checkLeft(
 
 \item{dist_cross_points}{Distance of the points on the crossprofile in meter. Defaults to '0.05'.}
 }
+\value{
+Points along the left side of the track representing the outer left
+extent of the track.
+}
 \description{
-Can save a GeoPackage and return a sf object of left side points
+Can save a GeoPackage and return a sf object of left side points.
 }
 \examples{
 dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))
 tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtrack"))
-left <- checkLeft(dsm, tracks, export = FALSE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05)
+left <- checkLeft(dsm, tracks, export = FALSE, dist_cross = 1, profile_length = 1,
+         dist_cross_points = 0.05)
 str(left)
-checkMap(dsm, tracks, points = left) #run checkMap() as many times as you like to get different examples
-
+checkMap(dsm, tracks, points = left)
+# run checkMap() as many times as you like to get different examples
 }

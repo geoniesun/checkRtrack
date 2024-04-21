@@ -6,7 +6,7 @@
 \alias{checkRtrack-package}
 \title{checkRtrack: R package to define track widths.}
 \description{
-For now, you can define the lowest points along your track, the side limits of the path and then map your progress. You need digitized tracks and a Digital Surface Model. The idea is to be able to individually set your parameters that fit your AOI and to then identify the track widths. It is created for the course "Introduction to Programming with R".
+You can generate track widths and adjust the process interactively by checking and mapping it. You need digitized tracks and a Digital Surface Model. It is created for the course "Introduction to Programming with R".
 }
 \seealso{
 Useful links:

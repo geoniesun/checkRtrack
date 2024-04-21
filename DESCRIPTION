@@ -4,12 +4,7 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Leonie", "Sonntag", , "leonie.sonntag@stud-mail.uni-wuerzburg.de", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: For now, you can define the lowest points along your track,
-            the side limits of the path and then map your progress. 
-            You need digitized tracks and a Digital Surface Model. 
-            The idea is to be able to individually set your parameters that
-            fit your AOI and to then identify the track widths. 
-            It is created for the course "Introduction to Programming with R". 
+Description: You can generate track widths and adjust the process interactively by checking and mapping it. You need digitized tracks and a Digital Surface Model. It is created for the course "Introduction to Programming with R". 
 License: MIT + file LICENSE
 URL: https://github.com/geoniesun/checkRtrack/tree/main
 BugRepors: https://github.com/geoniesun/checkRtrack/issues

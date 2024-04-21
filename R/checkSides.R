@@ -1,16 +1,16 @@
-#' Generates the track limit on the right and left side of the track
+#' Generates the track limit on the right and left side of the track.
 #'
-#' Can save a GeoPackage and return a sf object of right and left side points
+#' Can save a GeoPackage and return a sf object of right and left side points.
 #'
 #' @param dsm Digital Surface Model raster file as '.tif'.
-#' @param tracks Digital Surface Model raster file as '.tif'.
+#' @param tracks Digitized tracks as GeoPackage '.gpkg'.
 #' @param export If 'TRUE' the GeoPackage will be exported to your wd.
 #' @param dist_cross Distance between each crossprofile in meter. Defaults to '1'.
 #' @param profile_length Length of the crossprofile in meter. Defaults to '1'.
 #' @param dist_cross_points Distance of the points on the crossprofile in meter. Defaults to '0.05'.
 #'
 #' @return Points along both sides of the track representing the outer
-#'         extent of the track
+#'         extent of the track.
 #' @export
 #'
 #' @examples
