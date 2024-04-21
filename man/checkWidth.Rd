@@ -33,16 +33,16 @@ checkWidth(
 \item{st_dev}{Minimum standarddeviation of crossprofile dsm-value 'z'. Acts as a filter. Defaults to '0.06'.}
 }
 \value{
-The width information in meters added to the imported tracks object and a plot.
+The width information in meters added to the imported tracks objects attribute table and a plot
 of the width vs. the track type (labelled).
 }
 \description{
-It is recommended to use the other check-functions first.
+It is recommended to use the other check-functions first. You can plot and export your track widths. The width is defined here as the distance of the steepest points from each side of the track calculated with cross profiles.
 }
 \examples{
 dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))
 tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtrack"))
-width <- checkWidth(ddsm , tracks, export = FALSE, plot = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06)
+width <- checkWidth(dsm , tracks, export = FALSE, plot = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06)
 width
 
 }
