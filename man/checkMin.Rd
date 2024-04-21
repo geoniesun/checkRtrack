@@ -33,7 +33,7 @@ checkMin(
 Points along the track representing the lowest points of it.
 }
 \description{
-Can save a GeoPackage and return a sf object of minimumpoints.
+Can save a GeoPackage and return a sf object of minimumpoints. Recommended to use checkMap() after.
 }
 \examples{
 dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))

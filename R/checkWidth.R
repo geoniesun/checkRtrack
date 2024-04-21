@@ -1,6 +1,7 @@
 
 
 #' Generates the average width of the tracks.
+#'
 #' It is recommended to use the other check-functions first.
 #'
 #' @param dsm Digital Surface Model raster file as '.tif'.
@@ -19,9 +20,8 @@
 #' @examples
 #' dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))
 #' tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtrack"))
-#' width <- checkWidth(dsm, tracks, export = FALSE, plot = TRUE, dist_cross, profile_length, dist_cross_points, st_dev)
+#' width <- checkWidth(ddsm , tracks, export = FALSE, plot = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06)
 #' width
-#' str(width)
 #'
 
 checkWidth <- function(dsm , tracks, export = FALSE, plot = TRUE, dist_cross = 1,

@@ -31,7 +31,7 @@ Points along both sides of the track representing the outer
 extent of the track.
 }
 \description{
-Can save a GeoPackage and return a sf object of right and left side points.
+Can save a GeoPackage and return a sf object of right and left side points. Recommended to use checkMap() after.
 }
 \examples{
 dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))

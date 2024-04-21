@@ -4,7 +4,7 @@
 #' so each time running this function, a random spot on your tracks will be
 #' mapped to see how it worked out (so zooming in).
 #' The idea is to adjust the parameters used in the functions that created the
-#'  points.
+#'  points in the other check-functions.
 #'
 #' @param dsm Digital Surface Model raster file as '.tif'.
 #' @param tracks Digitized tracks as GeoPackage '.gpkg'.

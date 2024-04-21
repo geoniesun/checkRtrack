@@ -2,8 +2,7 @@
 % Please edit documentation in R/checkWidth.R
 \name{checkWidth}
 \alias{checkWidth}
-\title{Generates the average width of the tracks.
-It is recommended to use the other check-functions first.}
+\title{Generates the average width of the tracks.}
 \usage{
 checkWidth(
   dsm,
@@ -38,14 +37,12 @@ The width information in meters added to the imported tracks object and a plot.
 of the width vs. the track type (labelled).
 }
 \description{
-Generates the average width of the tracks.
 It is recommended to use the other check-functions first.
 }
 \examples{
 dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))
 tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtrack"))
-width <- checkWidth(dsm, tracks, export = FALSE, plot = TRUE, dist_cross, profile_length, dist_cross_points, st_dev)
+width <- checkWidth(ddsm , tracks, export = FALSE, plot = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06)
 width
-str(width)
 
 }

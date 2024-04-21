@@ -1,6 +1,6 @@
 #' Generates the track limit on the left side of the track.
 #'
-#' Can save a GeoPackage and return a sf object of left side points.
+#' Can save a GeoPackage and return a sf object of left side points. Recommended to use checkMap() after.
 #'
 #' @param dsm Digital Surface Model raster file as '.tif'.
 #' @param tracks Digitized tracks as GeoPackage '.gpkg'.

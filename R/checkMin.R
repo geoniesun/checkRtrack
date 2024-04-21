@@ -1,7 +1,7 @@
 
 #' Generates the lowest points along the paths.
 #'
-#' Can save a GeoPackage and return a sf object of minimumpoints.
+#' Can save a GeoPackage and return a sf object of minimumpoints. Recommended to use checkMap() after.
 #'
 #'
 #' @param dsm Digital Surface Model raster file as '.tif'.
