@@ -23,7 +23,7 @@
 #' #! loads quite a bit. Only a very small piece of the tif is available for an example
 #' dsm <- read_dsm(system.file("tif/dsm.tif", package = "checkRtrack"))
 #' tracks <- read_tracks(system.file("geopackage/tracks.gpkg", package = "checkRtrack"))
-#' width <- checkWidth(dsm , tracks, export = FALSE, plot = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06)
+#' width <- checkWidth(dsm, tracks, export = FALSE, plot = TRUE, dist_cross = 1, profile_length = 1, dist_cross_points = 0.05, st_dev = 0.06)
 #' width
 #'
 
@@ -162,44 +162,7 @@ if(isTRUE(export)) {
 }
 
 
-if(isTRUE(plot)) {
 
-  gg <- ggplot(data=tracks_width_join)+
-
-    geom_sf(aes(color=width))+
-    geom_sf_label(aes(label = class_id), nudge_x = 2 )+
-    scale_color_binned(type = "viridis")+                                       #legend colors and binned for better differentiation
-    guides(color = guide_colorsteps(barwidth = 1,                               #more legend settings
-                                    barheight = 8,
-                                    title.position = "top",
-                                    show.limits = T,
-                                    even.steps = T,
-                                    reverse = F))+
-
-    labs(color = "Width in [m]",
-         title = "Track width vs. Track type") +
-    theme(legend.position = "right") +
-    theme_void()+
-    theme(    #for an overview i decided to not put coordinates
-      axis.text.x = element_blank(),
-      axis.ticks.x = element_blank(),
-      axis.text.y = element_blank(),
-      axis.ticks.y = element_blank(),
-
-      panel.background = element_rect(fill = "darkgrey")) +
-
-    annotation_scale(location="br", width_hint = 0.5, pad_x = unit(0.1, "in"),  #scale
-                     pad_y = unit(0.1, "in")) +
-    annotation_north_arrow(location = "bl",
-                           which_north = "true",
-                           pad_x = unit(0.0, "in"), pad_y = unit(0.0, "in"),    # north arrow
-                           style = north_arrow_fancy_orienteering)
-
-return(gg)
-
-
-
-}
 
 return(tracks_width_join)
 
