@@ -3,6 +3,7 @@
 export(checkLeft)
 export(checkMap)
 export(checkMin)
+export(checkPolygon)
 export(checkRight)
 export(checkSides)
 export(checkWidth)
