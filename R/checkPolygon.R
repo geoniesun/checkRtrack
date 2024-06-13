@@ -12,7 +12,7 @@
 #' @export
 #'
 #' @examples
-#' polygon_as_width <- checkPolygon(dsm , tracks, export = FALSE, dist_cross = 1,profile_length = 1, dist_cross_points = 0.05,st_dev = 0.06
+#' polygon_as_width <- checkPolygon(dsm, tracks, export = FALSE, dist_cross = 1,profile_length = 1, dist_cross_points = 0.05,st_dev = 0.06)
 #' polygon_as_width
 
 

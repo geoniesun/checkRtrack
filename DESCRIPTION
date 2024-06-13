@@ -11,7 +11,7 @@ BugRepors: https://github.com/geoniesun/checkRtrack/issues
 Encoding: UTF-8
 Language: de
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Imports: 
     ggplot2,
     sf,
@@ -37,4 +37,3 @@ Depends:
     colorspace,
     ggspatial
 LazyData: true
-
