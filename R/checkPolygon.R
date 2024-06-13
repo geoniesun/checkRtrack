@@ -22,7 +22,7 @@ checkPolygon <- function(dsm, tracks, export = FALSE, dist_cross = 1,
 
 
   #extract the width of mean values for segments
-  line_width_mean <- checkWidth(dsm, tracks, export, plot, dist_cross, profile_length, dist_cross_points, st_dev)
+  line_width_mean <- checkWidth(dsm, tracks, export, dist_cross, profile_length, dist_cross_points, st_dev)
 
   halfdist <- (line_width_mean$width) / 2
   polygons <- st_buffer(line_width_mean, dist = halfdist)
@@ -34,15 +34,4 @@ checkPolygon <- function(dsm, tracks, export = FALSE, dist_cross = 1,
   }
 
   return(polygons)
-}
-
-test <- function(){
-  devtools::load_all()
-
-  dsm <- read_dsm("E:/stolsnek/parts/digitized/part1/dsm.tif")
-  tracks <- read_tracks("E:/stolsnek/parts/digitized/part1/lines_myself2.gpkg")
-
-  sides <- checkSides(dsm, tracks, export = FALSE, profile_length = 0.6)
-  checkRtrack::checkMap(dsm, tracks, points = sides, zoom = 6)
-  checkRtrack::checkPolygon(dsm, tracks, export = TRUE)
 }
