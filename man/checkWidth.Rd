@@ -8,7 +8,6 @@ checkWidth(
   dsm,
   tracks,
   export = FALSE,
-  plot = TRUE,
   dist_cross = 1,
   profile_length = 1,
   dist_cross_points = 0.05,
@@ -21,8 +20,6 @@ checkWidth(
 \item{tracks}{Digitized tracks as GeoPackage '.gpkg'.}
 
 \item{export}{If 'TRUE' the GeoPackage will be exported to your wd.}
-
-\item{plot}{If 'TRUE' a plot will be generated.}
 
 \item{dist_cross}{Distance between each crossprofile in meter. Defaults to '1'.}
 

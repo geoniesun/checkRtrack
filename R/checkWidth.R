@@ -5,7 +5,6 @@
 #' @param dsm Digital Surface Model raster file as '.tif'.
 #' @param tracks Digitized tracks as GeoPackage '.gpkg'.
 #' @param export If 'TRUE' the GeoPackage will be exported to your wd.
-#' @param plot If 'TRUE' a plot will be generated.
 #' @param dist_cross Distance between each crossprofile in meter. Defaults to '1'.
 #' @param profile_length Length of the crossprofile in meter. Defaults to '1'.
 #' @param dist_cross_points Distance of the points on the crossprofile in meter. Defaults to '0.05'.
@@ -25,7 +24,7 @@
 #' width
 #'
 
-checkWidth <- function(dsm, tracks, export = FALSE, plot = TRUE, dist_cross = 1,
+checkWidth <- function(dsm, tracks, export = FALSE, dist_cross = 1,
                        profile_length = 1, dist_cross_points = 0.05,
                        st_dev = 0.06) {
 
@@ -114,12 +113,14 @@ checkWidth <- function(dsm, tracks, export = FALSE, plot = TRUE, dist_cross = 1,
 
   merged$width <- merged$RightDistance + merged$LeftDistance
 
+  #take out width which is longer than profile length
+  merged_filtered <- dplyr::filter(merged, width <= dist_cross)
 
-  # createt categorial statistics to get the mean width of the track
+  # created categorial statistics to get the mean width of the track
 
   widthstats <- qgis_run_algorithm(
     algorithm = "qgis:statisticsbycategories",
-    INPUT = merged,
+    INPUT = merged_filtered,
     VALUES_FIELD_NAME = "width",
     CATEGORIES_FIELD_NAME = "track_id",
     OUTPUT = qgis_tmp_vector()
