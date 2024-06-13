@@ -25,15 +25,12 @@
 checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1,
                        profile_length = 1, dist_cross_points = 0.05) {
 
-
-
   # adding tracks_id column to maintain identification of the tracks
   tracks$track_id <- seq.int(nrow(tracks))
 
 
-
   # making sure, that the dsm and the tracks have the same crs
-  tracks <- st_transform(tracks, crs=st_crs(dsm))
+  tracks <- st_transform(tracks, crs = st_crs(dsm))
 
   # lets make the dsm a bit smaller for faster computation
   bufferedtrack <- sf::st_buffer(tracks, profile_length, endCapStyle = "ROUND",
@@ -47,7 +44,8 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   slope <- qgis_run_algorithm(
     algorithm = "native:slope",
     INPUT = dsm_clipped,
-    Z_FACTOR = 1                                                                # 1 means no exaggeration
+    Z_FACTOR = 1,                                                               # 1 means no exaggeration
+    OUTPUT = qgis_tmp_raster()
   )
   qgis_extract_output(slope)                                                    # needed to make output readable
   slope <- qgis_as_terra(slope)                                                 # slope result
@@ -57,12 +55,13 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   result <- qgis_run_algorithm(
     algorithm = "native:pointsalonglines",
     INPUT = tracks,
-    DISTANCE = dist_cross #in meters e.g. 1
+    DISTANCE = dist_cross, #in meters e.g. 1
+    START_OFFSET = 0,
+    END_OFFSET = 0,
+    OUTPUT = qgis_tmp_vector()
   )
   qgis_extract_output(result)                                                   # needed to make output readable
   pag <- sf::st_as_sf(result)                                                   # the points along the track
-
-
 
 
   # creating an expression to create vertical lines on each point of 'pag' and its original track going through it
@@ -72,7 +71,7 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1,
         \n        ),\r\n   tobechanged,\r\n   0\r\n)"
 
   # user will input full length of crossprofiles
-  profilelengthhalf <- profile_length/2
+  profilelengthhalf <- profile_length / 2
 
   # creating the adapted expression with new profile length
   newexpression <- gsub('tobechanged', profilelengthhalf, expression)
@@ -83,7 +82,10 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1,
     algorithm = "native:geometrybyexpression",
     INPUT = pag,
     EXPRESSION = newexpression,
-    OUTPUT_GEOMETRY = 1
+    OUTPUT_GEOMETRY = 1,
+    WITH_Z = 0,
+    WITH_M = 0,
+    OUTPUT = qgis_tmp_vector()
   )
 
   qgis_extract_output(profiles)                                                 # needed to make output readable
@@ -99,7 +101,10 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   sagaPFL <- qgis_run_algorithm(
     algorithm = "native:pointsalonglines",
     INPUT = gbe,
-    DISTANCE = dist_cross_points #in meters
+    DISTANCE = dist_cross_points, #in meters
+    START_OFFSET = 0,
+    END_OFFSET = 0,
+    OUTPUT = qgis_tmp_vector()
   )
   qgis_extract_output(sagaPFL)                                                  # needed to make output readable
   pfl <- sf::st_as_sf(sagaPFL)
@@ -113,17 +118,15 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   joinedL <- st_join(bufferedpoints, gbe, left = T)
 
   # recreate center points of buffers to later add the DSM (slope) data
-  centerpoints <- sf::st_centroid(joinedL)
+  centerpoints <- suppressWarnings({ st_centroid(joinedL) })
 
   # adding the slope values to the points
-  slopepoints <- terra::extract(slope,centerpoints)
+  slopepoints <- terra::extract(slope, centerpoints)
   centerpoints$slope <- slopepoints[, -1]
 
   # adding dsm z values for later join
-  dsmpoints <- terra::extract(dsm,centerpoints)
+  dsmpoints <- terra::extract(dsm, centerpoints[, 1:2])
   centerpoints$z <- dsmpoints[, -1]
-
-
 
 
   #removing the unnecessary line_id.y.x that have been created by joining
@@ -136,17 +139,26 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1,
 
 
   # splitting the track sides into TWO
-  sidebuff_distance <- profile_length/2                                         # buffer exactly long as the profile of the side
+  sidebuff_distance <- profile_length / 2                                         # buffer exactly long as the profile of the side
+
+  tracks_single <- qgis_run_algorithm(
+    algorithm = "native:multiparttosingleparts",
+    INPUT = tracks,
+    OUTPUT = qgis_tmp_vector()
+  )
+  qgis_extract_output(tracks_single)                                                  # needed to make output readable
+  tracks_single <- sf::st_as_sf(tracks_single)
 
   #single sided buffer for left
   upbuff <- qgis_run_algorithm(
     algorithm = "native:singlesidedbuffer",
-    INPUT = tracks,
-    DISTANCE = sidebuff_distance ,
+    INPUT = tracks_single,
+    DISTANCE = sidebuff_distance,
     SIDE = 1,
-    SEGMENTS =8,
-    JOIN_STYLE=0,
-    MITER_LIMIT= 2
+    SEGMENTS = 8,
+    JOIN_STYLE = 0,
+    MITER_LIMIT = 2,
+    OUTPUT = qgis_tmp_vector()
   )
   qgis_extract_output(upbuff)                                                   # needed to unwrap the output
   upbuff <- sf::st_as_sf(upbuff)
@@ -154,12 +166,13 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   #single sided buffer for right
   downbuff <- qgis_run_algorithm(
     algorithm = "native:singlesidedbuffer",
-    INPUT = tracks,
-    DISTANCE = sidebuff_distance ,
+    INPUT = tracks_single,
+    DISTANCE = sidebuff_distance,
     SIDE = 0,
-    SEGMENTS =8,
-    JOIN_STYLE=0,
-    MITER_LIMIT= 2
+    SEGMENTS = 8,
+    JOIN_STYLE = 0,
+    MITER_LIMIT = 2,
+    OUTPUT = qgis_tmp_vector()
   )
 
   qgis_extract_output(downbuff)                                                 # needed to unwrap the output
@@ -167,9 +180,8 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1,
 
 
   # filter the centerpoints by each side only
-  upperslope <- st_filter(centerpoints,upbuff)
-  downerslope <- st_filter(centerpoints,downbuff)
-
+  upperslope <- st_filter(centerpoints, upbuff)
+  downerslope <- st_filter(centerpoints, downbuff)
 
 
   # created categorial statistics to get the maximum slope of each side
@@ -178,16 +190,16 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1,
     algorithm = "qgis:statisticsbycategories",
     INPUT = upperslope,
     VALUES_FIELD_NAME = "slope",
-    CATEGORIES_FIELD_NAME = "line_id"
-
+    CATEGORIES_FIELD_NAME = "line_id",
+    OUTPUT = qgis_tmp_vector()
   )
 
   downerstats <- qgis_run_algorithm(
     algorithm = "qgis:statisticsbycategories",
     INPUT = downerslope,
     VALUES_FIELD_NAME = "slope",
-    CATEGORIES_FIELD_NAME = "line_id"
-
+    CATEGORIES_FIELD_NAME = "line_id",
+    OUTPUT = qgis_tmp_vector()
   )
 
 
@@ -198,12 +210,9 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   stats_down <- sf::st_as_sf(sd)
 
 
-
-
   # join attributes from pointslayer with the slope info by the line_id
   slope_up_stats <- dplyr::left_join(upperslope, stats_up, by = "line_id")
   slope_down_stats <- dplyr::left_join(downerslope, stats_down, by = "line_id")
-
 
 
   # select objects where slope value is the same as max value (so we only have the max slope point of the profiles)
@@ -212,33 +221,29 @@ checkSides <- function(dsm, tracks, export = TRUE, dist_cross = 1,
 
 
   # to categorize the points
-    selected_up$Pointtype <- "Left"
-    selected_down$Pointtype <- "Right"
+  selected_up$Pointtype <- "Left"
+  selected_down$Pointtype <- "Right"
 
-    # bring both sides into one
-    joined_points <- dplyr::bind_rows(selected_up,selected_down)
+  # bring both sides into one
+  joined_points <- dplyr::bind_rows(selected_up, selected_down)
 
-    # delete possible NAs
-    joined_points <- na.omit(joined_points)
+  # delete possible NAs
+  joined_points <- na.omit(joined_points)
 
-    # defining which columns are not needed
-    drop <- c("angle", "unique", "distance", "count", "range", "sum", "max",
-              "mean", "median", "minority", "majority", "min", "q1", "q3", "iqr")
+  # defining which columns are not needed
+  drop <- c("angle", "unique", "distance", "count", "range", "sum", "max",
+            "mean", "median", "minority", "majority", "min", "q1", "q3", "iqr")
 
-    # deleting unncessesary columns that have been created during the process
-    joined_points <- joined_points[,!(names(joined_points) %in% drop)]
+  # deleting unncessesary columns that have been created during the process
+  joined_points <- joined_points[, !(names(joined_points) %in% drop)]
 
 
-    # export the points as GeoPackage
-  if(isTRUE(export)) {
-
+  # export the points as GeoPackage
+  if (isTRUE(export)) {
     st_write(joined_points, "right_left_points.gpkg", driver = "GPKG")
-
-
   }
 
-    # return the points with maximum slope of both sides of the track
-return(joined_points)
-
+  # return the points with maximum slope of both sides of the track
+  return(joined_points)
 }
 

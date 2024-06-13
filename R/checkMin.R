@@ -1,4 +1,3 @@
-
 #' Generates the lowest points along the paths.
 #'
 #' Can save a GeoPackage and return a sf object of minimumpoints. Recommended to use checkMap() after.
@@ -32,18 +31,19 @@ checkMin <- function(dsm, tracks, export = TRUE, dist_cross = 1,
 
 
   # making sure, that the dsm and the tracks have the same crs
-  tracks <- st_transform(tracks, crs=st_crs(dsm))
+  tracks <- st_transform(tracks, crs = st_crs(dsm))
 
   # Creating points along the track (pag = points algong geometry)
   result <- qgis_run_algorithm(
     algorithm = "native:pointsalonglines",
     INPUT = tracks,
-    DISTANCE = dist_cross #in meters e.g. 1
+    DISTANCE = dist_cross, #in meters e.g. 1
+    START_OFFSET = 0,
+    END_OFFSET = 0,
+    OUTPUT = qgis_tmp_vector()
   )
   qgis_extract_output(result)                                                   # needed to make output readable
   pag <- sf::st_as_sf(result)                                                   # the points along the track
-
-
 
 
   # creating an expression to create vertical lines on each point of 'pag' and its original track going through it
@@ -52,14 +52,12 @@ checkMin <- function(dsm, tracks, export = TRUE, dist_cross = 1,
         \n        ),\r\n   tobechanged,\r\n   0\r\n)"
 
 
-
   # user will input full length of crossprofiles
-  profilelengthhalf <- profile_length/2
+  profilelengthhalf <- profile_length / 2
 
 
   # creating the adapted expression with new profile length
   newexpression <- gsub('tobechanged', profilelengthhalf, expression)
-
 
 
   # now the profiles are being created
@@ -67,7 +65,10 @@ checkMin <- function(dsm, tracks, export = TRUE, dist_cross = 1,
     algorithm = "native:geometrybyexpression",
     INPUT = pag,
     EXPRESSION = newexpression,
-    OUTPUT_GEOMETRY = 1
+    WITH_Z = 0,
+    WITH_M = 0,
+    OUTPUT_GEOMETRY = 1,
+    OUTPUT = qgis_tmp_vector()
   )
 
   qgis_extract_output(profiles)                                                 # needed to make output readable
@@ -83,7 +84,10 @@ checkMin <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   sagaPFL <- qgis_run_algorithm(
     algorithm = "native:pointsalonglines",
     INPUT = gbe,
-    DISTANCE = dist_cross_points #in meters
+    DISTANCE = dist_cross_points, #in meters
+    START_OFFSET = 0,
+    END_OFFSET = 0,
+    OUTPUT = qgis_tmp_vector()
   )
   qgis_extract_output(sagaPFL)                                                  # needed to make output readable
   pfl <- sf::st_as_sf(sagaPFL)
@@ -96,13 +100,12 @@ checkMin <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   # join attributes by location
   joinedL <- st_join(bufferedpoints, gbe, left = T)
 
-   # recreate center points of buffers to later add the DSM (z) data
-  centerpoints <- sf::st_centroid(joinedL)
+  # recreate center points of buffers to later add the DSM (z) data
+  centerpoints <- suppressWarnings({ st_centroid(joinedL) })
 
   # adding dsm z values
-  dsmpoints <- terra::extract(dsm,centerpoints)
+  dsmpoints <- terra::extract(dsm, centerpoints)
   centerpoints$z <- dsmpoints[, -1]
-
 
 
   #removing the unnecessary line_id.y.x that have been created by joining
@@ -119,8 +122,8 @@ checkMin <- function(dsm, tracks, export = TRUE, dist_cross = 1,
     algorithm = "qgis:statisticsbycategories",
     INPUT = centerpoints,
     VALUES_FIELD_NAME = "z",
-    CATEGORIES_FIELD_NAME = "line_id"
-
+    CATEGORIES_FIELD_NAME = "line_id",
+    OUTPUT = qgis_tmp_vector()
   )
 
   s <- qgis_extract_output(catstats)                                            # needed to unwrap the output
@@ -137,24 +140,20 @@ checkMin <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   selected$Pointtype <- "Minimum"                                               # to categorize the point
   selected <- na.omit(selected)                                                 # delete possible NAs
 
-  drop <- c("angle", "unique", "distance", "count", "range","mean", "median",   # defining which columns are not needed
-            "min", "minority", "sum","majority", "q1", "q3", "iqr","max")
+  drop <- c("angle", "unique", "distance", "count", "range", "mean", "median",   # defining which columns are not needed
+            "min", "minority", "sum", "majority", "q1", "q3", "iqr", "max")
 
-  selected <- selected[,!(names(selected) %in% drop)]                           # deleting unncessesary columns that have been created during the process
-
+  selected <- selected[, !(names(selected) %in% drop)]                           # deleting unncessesary columns that have been created during the process
 
 
   # export the points as GeoPackage
-  if(export) {
+  if (export) {
     st_write(selected, "minimumpoints.gpkg", driver = "GPKG")
     message("You now have a GPKG Layer with minimumpoints along your track in your outputfolder")
- }
+  }
 
   # return the points with the minimum z of the track
   return(selected)
-
-
-
 
 
 }

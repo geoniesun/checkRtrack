@@ -15,27 +15,26 @@
 #'
 read_tracks <- function(yourTracksPath) {
 
-  if(!file.exists(yourTracksPath)) stop("Track file does not exist.
+  if (!file.exists(yourTracksPath)) stop("Track file does not exist.
                                         The file you tried to import: ",
-                                        yourTracksPath, call = FALSE)
+                                         yourTracksPath, call = FALSE)
   #TASK: converting to gpkg to be included here
-  if(!grep("gpkg", yourTracksPath)) stop("Your chosen Track file is not in the
+  if (!grep("gpkg", yourTracksPath)) stop("Your chosen Track file is not in the
                                          right format (.gpkg) and must be
                                          converted first")
 
-  format <- if(grepl("gpkg", yourTracksPath)) "GPKG"
+  format <- if (grepl("gpkg", yourTracksPath)) "GPKG"
 
-  if(format == "GPKG") {
+  if (format == "GPKG") {
+    thetracks <- sf::st_read(yourTracksPath)
 
-    thetracks <-  sf::st_read(yourTracksPath)
+    message("The next step will be easier if you named the output as 'tracks'
+            ('tracks <- read_track(yourpath)'). If you did already, great!")
 
-        message("The next step will be easier if you named the output as 'tracks'
-                ('tracks <- read_track(yourpath)'). If you did already, great!")
-
-    }
-return(thetracks)
-
+    return(thetracks)
   }
+
+}
 
 
 

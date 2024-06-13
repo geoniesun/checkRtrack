@@ -49,7 +49,8 @@ checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   slope <- qgis_run_algorithm(
     algorithm = "native:slope",
     INPUT = dsm_clipped,
-    Z_FACTOR = 1                                                                # 1 means no exaggeration
+    Z_FACTOR = 1,                                                               # 1 means no exaggeration
+    OUTPUT = qgis_tmp_vector()
   )
   qgis_extract_output(slope)                                                    # needed to make output readable
   slope <- qgis_as_terra(slope)                                                 # slope result
@@ -60,7 +61,10 @@ checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   result <- qgis_run_algorithm(
     algorithm = "native:pointsalonglines",
     INPUT = tracks,
-    DISTANCE = dist_cross #in meters e.g. 1
+    DISTANCE = dist_cross, #in meters e.g. 1
+    START_OFFSET = 0,
+    END_OFFSET = 0,
+    OUTPUT = qgis_tmp_vector()
   )
   qgis_extract_output(result)                                                   # needed to make output readable
   pag <- sf::st_as_sf(result)                                                   # the points along the track
@@ -87,8 +91,11 @@ checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   profiles <- qgis_run_algorithm(
     algorithm = "native:geometrybyexpression",
     INPUT = pag,
+    WITH_Z = 0,
+    WITH_M = 0,
     EXPRESSION = newexpression,
-    OUTPUT_GEOMETRY = 1
+    OUTPUT_GEOMETRY = 1,
+    OUTPUT = qgis_tmp_vector()
   )
 
   qgis_extract_output(profiles)                                                 # needed to make output readable
@@ -104,7 +111,10 @@ checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   sagaPFL <- qgis_run_algorithm(
     algorithm = "native:pointsalonglines",
     INPUT = gbe,
-    DISTANCE = dist_cross_points #in meters
+    DISTANCE = dist_cross_points, #in meters
+    START_OFFSET = 0,
+    END_OFFSET = 0,
+    OUTPUT = qgis_tmp_vector()
   )
   qgis_extract_output(sagaPFL)                                                  # needed to make output readable
   pfl <- sf::st_as_sf(sagaPFL)
@@ -118,7 +128,7 @@ checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   joinedL <- st_join(bufferedpoints, gbe, left = T)#until here the package worked 25.03.2024
 
   # recreate center points of buffers to later add the DSM (slope) data
-  centerpoints <- sf::st_centroid(joinedL)
+  centerpoints <- suppressWarnings({ st_centroid(joinedL) })
 
   # adding the slope values to the centerpoints
   slopepoints <- terra::extract(slope,centerpoints)
@@ -143,14 +153,25 @@ checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   # splitting the track sides into to to get the right side only
   sidebuff_distance <- profile_length/2                                         # buffer exactly long as the profile of the side
 
+
+  tracks_single <- qgis_run_algorithm(
+    algorithm = "native:multiparttosingleparts",
+    INPUT = tracks,
+    OUTPUT = qgis_tmp_vector()
+  )
+  qgis_extract_output(tracks_single)                                                  # needed to make output readable
+  tracks_single <- sf::st_as_sf(tracks_single)
+
+
   downbuff <- qgis_run_algorithm(                                               # creating the single sided buffer
     algorithm = "native:singlesidedbuffer",
-    INPUT = tracks,
+    INPUT = tracks_single,
     DISTANCE = sidebuff_distance ,
     SIDE = 0,                                                                   # 0 is right side
     SEGMENTS =8,
     JOIN_STYLE=0,
-    MITER_LIMIT= 2
+    MITER_LIMIT= 2,
+    OUTPUT = qgis_tmp_vector()
   )
   qgis_extract_output(downbuff)                                                 # needed to unwrap the output
   downbuff <- sf::st_as_sf(downbuff)
@@ -166,8 +187,8 @@ checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1,
     algorithm = "qgis:statisticsbycategories",
     INPUT = downperslope,
     VALUES_FIELD_NAME = "slope",
-    CATEGORIES_FIELD_NAME = "line_id"
-
+    CATEGORIES_FIELD_NAME = "line_id",
+    OUTPUT = qgis_tmp_vector()
   )
 
 
@@ -183,24 +204,21 @@ checkRight <- function(dsm, tracks, export = TRUE, dist_cross = 1,
   selected_down <- slope_down_stats[slope_down_stats$slope == slope_down_stats$max,]
 
 
-    selected_down$Pointtype <- "Right"                                          # to categorize the point
-    selected_down <- na.omit(selected_down)                                     # delete possible NAs
+  selected_down$Pointtype <- "Right"                                          # to categorize the point
+  selected_down <- na.omit(selected_down)                                     # delete possible NAs
 
-    drop <- c("angle", "unique", "distance", "count", "range","mean", "min",    # defining which columns are not needed
-              "sum", "max", "median", "minority", "majority", "q1", "q3", "iqr")
+  drop <- c("angle", "unique", "distance", "count", "range","mean", "min",    # defining which columns are not needed
+            "sum", "max", "median", "minority", "majority", "q1", "q3", "iqr")
 
-    selected_down <- selected_down[,!(names(selected_down) %in% drop)]          # deleting unncessesary columns that have been created during the process
+  selected_down <- selected_down[,!(names(selected_down) %in% drop)]          # deleting unncessesary columns that have been created during the process
 
 
-
-    # export the points as GeoPackage
+  # export the points as GeoPackage
   if(isTRUE(export)) {
-
     st_write(selected_down, "right_points.gpkg", driver = "GPKG")
-
-
   }
-    # return the points with maximum slope of the right side of the track
-return(selected_down)
+
+  # return the points with maximum slope of the right side of the track
+  return(selected_down)
 
 }

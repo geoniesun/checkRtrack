@@ -1,5 +1,3 @@
-
-
 #' Generates the average width of the tracks.
 #'
 #' It is recommended to use the other check-functions first. You can plot and export your track widths. The width is defined here as the distance of the steepest points from each side of the track calculated with cross profiles.
@@ -27,149 +25,136 @@
 #' width
 #'
 
-checkWidth <- function(dsm , tracks, export = FALSE, plot = TRUE, dist_cross = 1,
+checkWidth <- function(dsm, tracks, export = FALSE, plot = TRUE, dist_cross = 1,
                        profile_length = 1, dist_cross_points = 0.05,
                        st_dev = 0.06) {
 
 
-
-
   ## preparation for the width
 
-# removing possible NAs
+  # removing possible NAs
   tracks <- na.omit(tracks)
   dsm <- na.omit(dsm)
 
-# calculating minimum track points
-mini <- checkMin(dsm, tracks, export = FALSE, dist_cross, profile_length,
-                 dist_cross_points, st_dev)
+  # calculating minimum track points
+  mini <- checkMin(dsm, tracks, export = FALSE, dist_cross, profile_length,
+                   dist_cross_points, st_dev)
 
-# calculating left extent track points
-left <- checkLeft(dsm, tracks, export = FALSE, dist_cross, profile_length,
-                  dist_cross_points)
-# calculating right extent track points
-right <- checkRight(dsm, tracks, export = FALSE, dist_cross, profile_length,
+  # calculating left extent track points
+  left <- checkLeft(dsm, tracks, export = FALSE, dist_cross, profile_length,
                     dist_cross_points)
+  # calculating right extent track points
+  right <- checkRight(dsm, tracks, export = FALSE, dist_cross, profile_length,
+                      dist_cross_points)
 
-# filter the right and left points with the stddev
-left_std <- left[left$line_id %in%
-                   mini$line_id,]
+  # filter the right and left points with the stddev
+  left_std <- left[left$line_id %in%
+                     mini$line_id,]
 
-right_std <- right[right$line_id %in%
-                   mini$line_id,]
+  right_std <- right[right$line_id %in%
+                       mini$line_id,]
 
 
   ## calculation of the distances to the minimumpoints for each side
 
-# distance between left and min points (dlm)
-dist_left <- qgis_run_algorithm(
-  algorithm = "qgis:distancetonearesthubpoints",
-  INPUT = mini,
-  HUBS = left_std,
-  FIELD = 'line_id',
-  UNIT = 0                                                                      # 0 is meters
+  # distance between left and min points (dlm)
+  dist_left <- qgis_run_algorithm(
+    algorithm = "qgis:distancetonearesthubpoints",
+    INPUT = mini,
+    HUBS = left_std,
+    FIELD = 'line_id',
+    UNIT = 0,                                                                     # 0 is meters
+    OUTPUT = qgis_tmp_vector()
+  )
 
-)
+  qgis_extract_output(dist_left)                                                  # needed to make output readable
+  dlm <- sf::st_as_sf(dist_left)                                                  # the points along the track
 
-qgis_extract_output(dist_left)                                                  # needed to make output readable
-dlm <- sf::st_as_sf(dist_left)                                                  # the points along the track
+  # adding the left distance field
+  dlm <- dlm %>%
+    rename(
+      LeftDistance = HubDist
+    )
 
-# adding the left distance field
-dlm <- dlm %>%
-  rename(
-    LeftDistance = HubDist
+
+  # distance between right and min points (drm)
+  dist_right <- qgis_run_algorithm(
+    algorithm = "qgis:distancetonearesthubpoints",
+    INPUT = mini,
+    HUBS = right_std,
+    FIELD = 'line_id',
+    UNIT = 0,                                                                     # 0 is meters
+    OUTPUT = qgis_tmp_vector()
+  )
+
+  qgis_extract_output(dist_right)                                                 # needed to make output readable
+  drm <- sf::st_as_sf(dist_right)
+
+  # adding the right distance field
+  drm <- drm %>%
+    rename(
+      RightDistance = HubDist
+    )
+
+
+  #extracting only the distance and id info to merge the datasets
+  drm <- drm[, c("RightDistance", "line_id")]
+
+  # merging both datasets
+  merged <- st_join(drm, dlm, by = line_id)
+
+  # filter away the new colname issues
+  merged <- merged %>%
+    dplyr::select(!ends_with("y"))                                                # first filter all without 'y'-ending
+
+  merged_newcol <- gsub("\\.x$", "", colnames(merged))                            # then deleting the 'x' -endings
+
+  colnames(merged) <- merged_newcol
+
+
+  merged$width <- merged$RightDistance + merged$LeftDistance
+
+
+  # createt categorial statistics to get the mean width of the track
+
+  widthstats <- qgis_run_algorithm(
+    algorithm = "qgis:statisticsbycategories",
+    INPUT = merged,
+    VALUES_FIELD_NAME = "width",
+    CATEGORIES_FIELD_NAME = "track_id",
+    OUTPUT = qgis_tmp_vector()
   )
 
 
-# distance between right and min points (drm)
-dist_right <- qgis_run_algorithm(
-  algorithm = "qgis:distancetonearesthubpoints",
-  INPUT = mini,
-  HUBS = right_std,
-  FIELD = 'line_id',
-  UNIT = 0                                                                      # 0 is meters
+  sw <- qgis_extract_output(widthstats)                                           # needed to unwrap the output
+  stats_width <- sf::st_as_sf(sw)
 
-)
+  # adding mean width of tracks to the tracks layer
 
-qgis_extract_output(dist_right)                                                 # needed to make output readable
-drm <- sf::st_as_sf(dist_right)
+  tracks_width <- tracks
 
-# adding the right distance field
-drm <- drm %>%
-  rename(
-    RightDistance = HubDist
-  )
+  # adding tracks_id column to maintain identification of the tracks
+  tracks_width$track_id <- seq.int(nrow(tracks))
+
+  #join attributs from points layer with dsm z info by line_id
+  tracks_width_join <- dplyr::left_join(tracks_width, stats_width, by = "track_id")
+  tracks_width_join <- na.omit(tracks_width_join)
 
 
-#extracting only the distance and id info to merge the datasets
-drm <- drm[,c("RightDistance", "line_id")]
+  tracks_width_join$width <- tracks_width_join$mean
 
-# merging both datasets
-merged <- st_join(drm, dlm, by = line_id)
+  drop <- c("unique", "count", "mean", "range", "median",   # defining which columns are not needed
+            "min", "minority", "sum", "majority", "q1", "q3", "iqr", "max", "stddev")
 
-# filter away the new colname issues
-merged <- merged %>%
-  dplyr::select(!ends_with("y"))                                                # first filter all without 'y'-ending
-
-merged_newcol <- gsub("\\.x$", "", colnames(merged))                            # then deleting the 'x' -endings
-
-colnames(merged) <- merged_newcol
+  tracks_width_join <- tracks_width_join[, !(names(tracks_width_join) %in% drop)]
 
 
-merged$width <- merged$RightDistance + merged$LeftDistance
+  # export the points as GeoPackage
+  if (isTRUE(export)) {
 
+    st_write(tracks_width_join, "tracks_width.gpkg", driver = "GPKG")
+  }
 
-
-# createt categorial statistics to get the mean width of the track
-
-widthstats <- qgis_run_algorithm(
-  algorithm = "qgis:statisticsbycategories",
-  INPUT = merged,
-  VALUES_FIELD_NAME = "width",
-  CATEGORIES_FIELD_NAME = "track_id"
-)
-
-
-
-sw <- qgis_extract_output(widthstats)                                           # needed to unwrap the output
-stats_width <- sf::st_as_sf(sw)
-
-# adding mean width of tracks to the tracks layer
-
-tracks_width <- tracks
-
-# adding tracks_id column to maintain identification of the tracks
-tracks_width$track_id <- seq.int(nrow(tracks))
-
-#join attributs from points layer with dsm z info by line_id
-tracks_width_join <- dplyr::left_join(tracks_width, stats_width, by = "track_id")
-tracks_width_join <- na.omit(tracks_width_join)
-
-
-tracks_width_join$width <- tracks_width_join$mean
-
-drop <- c("unique", "count", "mean", "range", "median",   # defining which columns are not needed
-          "min", "minority", "sum","majority", "q1", "q3", "iqr","max", "stddev")
-
-tracks_width_join <- tracks_width_join[,!(names(tracks_width_join) %in% drop)]
-
-
-
-# export the points as GeoPackage
-if(isTRUE(export)) {
-
-  st_write(tracks_width_join, "tracks_width.gpkg", driver = "GPKG")
-}
-
-
-
-
-return(tracks_width_join)
+  return(tracks_width_join)
 
 }
-
-
-
-
-
-

@@ -1,5 +1,3 @@
-
-
 #' Generates a polygon around the input lines as wide as the detected width of the track
 #'
 #' @param dsm Digital Surface Model raster file as '.tif'.
@@ -18,21 +16,33 @@
 #' polygon_as_width
 
 
-checkPolygon <- function(dsm , tracks, export = FALSE, dist_cross = 1,
-                       profile_length = 1, dist_cross_points = 0.05,
-                       st_dev = 0.06) {
+checkPolygon <- function(dsm, tracks, export = FALSE, dist_cross = 1,
+                         profile_length = 1, dist_cross_points = 0.05,
+                         st_dev = 0.06) {
 
 
   #extract the width of mean values for segments
-line_width_mean <- checkWidth(dsm, tracks, export, plot, dist_cross, profile_length, dist_cross_points, st_dev)
+  line_width_mean <- checkWidth(dsm, tracks, export, plot, dist_cross, profile_length, dist_cross_points, st_dev)
 
-halfdist <- (line_width_mean$width)/2
+  halfdist <- (line_width_mean$width) / 2
   polygons <- st_buffer(line_width_mean, dist = halfdist)
 
   # export the points as GeoPackage
-  if(isTRUE(export)) {
+  if (isTRUE(export)) {
 
     st_write(polygons, "width_buffer_tracks.gpkg", driver = "GPKG")
   }
-return(polygons)
+
+  return(polygons)
+}
+
+test <- function(){
+  devtools::load_all()
+
+  dsm <- read_dsm("E:/stolsnek/parts/digitized/part1/dsm.tif")
+  tracks <- read_tracks("E:/stolsnek/parts/digitized/part1/lines_myself2.gpkg")
+
+  sides <- checkSides(dsm, tracks, export = FALSE, profile_length = 0.6)
+  checkRtrack::checkMap(dsm, tracks, points = sides, zoom = 6)
+  checkRtrack::checkPolygon(dsm, tracks, export = TRUE)
 }

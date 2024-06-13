@@ -29,22 +29,16 @@
 checkMap <- function(dsm, tracks, points, morepoints=NULL,evenmorepoints =NULL,
                      export = FALSE, zoom = 3) {
 
-
-
-## Creating a Map extent and prepare the data
-
+  ## Creating a Map extent and prepare the data
 
   # adding tracks_id column to maintain identification of the tracks
   tracks$track_id <- seq.int(nrow(tracks))
-
-
 
   # Selecting a random points of the pointslayer (for random mapping)
   randompoint <- points[sample(nrow(points), 1),]
 
   # defining the extent of the map extent by using the parameter 'zoom'
   buffer <- st_buffer(randompoint, zoom, enCapStyle = "SQUARE")
-
 
   # creating an extent for the map
   dsm_subset <- crop(dsm, buffer)
@@ -54,8 +48,8 @@ checkMap <- function(dsm, tracks, points, morepoints=NULL,evenmorepoints =NULL,
 
 
   # subsetting the other input to the map extent
-  lines_subset <- st_crop(tracks, dsm_sf)
-  points_subset <- st_crop(points, dsm_sf)
+  lines_subset <- suppressWarnings({ st_crop(tracks, dsm_sf) })
+  points_subset <- suppressWarnings({ st_crop(points, dsm_sf) })
 
 
   # creating a dataframe of the subsetted dsm to use it as geom_raster
@@ -65,9 +59,7 @@ checkMap <- function(dsm, tracks, points, morepoints=NULL,evenmorepoints =NULL,
 
 
 
-## Creating a Hillshade Layer for the Map
-
-
+  ## Creating a Hillshade Layer for the Map
 
   # calculating the slope with terra
   sl <- terrain(dsm_subset, "slope", unit = "radians")
@@ -149,18 +141,16 @@ checkMap <- function(dsm, tracks, points, morepoints=NULL,evenmorepoints =NULL,
       morepoints_std <- morepoints_crop[morepoints_crop$line_id %in%
                                         points_subset$line_id,]
 
-    # bind the points together again
-    allpoints <- bind_rows(points_subset, morepoints_std)
+      # bind the points together again
+      allpoints <- bind_rows(points_subset, morepoints_std)
 
 
-    #plotting
-    ggmore <- gg + geom_sf(data=allpoints, aes(colour = Pointtype))
+      #plotting
+      ggmore <- gg + geom_sf(data=allpoints, aes(colour = Pointtype))
 
-    return(ggmore)
+      return(ggmore)
 
     }
-
-
     # if three pointlayers should be mapped :
     else {
 
@@ -199,9 +189,9 @@ checkMap <- function(dsm, tracks, points, morepoints=NULL,evenmorepoints =NULL,
   }
 
   # export the map as png
-if(isTRUE(export==TRUE)) {
-
-  ggsave("plot_from_checkRtrack.png")}
+  if(isTRUE(export==TRUE)) {
+    ggsave("plot_from_checkRtrack.png")
+  }
 
 }
 
