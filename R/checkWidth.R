@@ -28,7 +28,6 @@ checkWidth <- function(dsm, tracks, export = FALSE, dist_cross = 1,
                        profile_length = 1, dist_cross_points = 0.05,
                        st_dev = 0.06) {
 
-
   ## preparation for the width
 
   # removing possible NAs
@@ -114,7 +113,7 @@ checkWidth <- function(dsm, tracks, export = FALSE, dist_cross = 1,
   merged$width <- merged$RightDistance + merged$LeftDistance
 
   #take out width which is longer than profile length
-  merged_filtered <- dplyr::filter(merged, width <= dist_cross)
+  merged_filtered <- dplyr::filter(merged, width <= profile_length)
 
   # created categorial statistics to get the mean width of the track
 
