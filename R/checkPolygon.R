@@ -2,7 +2,7 @@
 #'
 #' @param dsm Digital Surface Model raster file as '.tif'.
 #' @param tracks Digitized tracks as GeoPackage '.gpkg'.
-#' @param export If 'TRUE' the GeoPackage will be exported to your wd.
+#' @param export If 'TRUE' the GeoPackage with polygons and a Geopackage of your input tracks with added width will be exported to your wd.
 #' @param dist_cross Distance between each crossprofile in meter. Defaults to '1'.
 #' @param profile_length Length of the crossprofile in meter. Defaults to '1'.
 #' @param dist_cross_points Distance of the points on the crossprofile in meter. Defaults to '0.05'.
