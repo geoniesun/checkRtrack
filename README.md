@@ -109,6 +109,7 @@ checkWidth(dsm , tracks, export = FALSE, plot = TRUE, dist_cross = 1, profile_le
 ```
 
 ![](images/width_vs_type.png)
+***To check the results visually, we also uploaded the rgb tif of the plot above within checkRtrack.***
 
 ------------------------------------------------------------------------
 
