@@ -151,8 +151,7 @@ meant by the “points” that we create with the functions.
 
 ## Data sources
 
-Digital Surface Model (DSM) used as example: © Antonio Jose Castañeda
-Gomez and the UAS-team of the University of Würzburg
+Digital Surface Model (DSM) used as example: © The UAS-team of the Earth Observation Research Cluster | University of Würzburg
 
 Geopackage data used as example: © University of Würzburg (digitized by
 Leonie Sophie Sonntag)
